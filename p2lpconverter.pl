@@ -181,10 +181,11 @@ line(Word1) -->
 [[a,*,*]],
 [[b,*,*],[c,d]],
 [[ef,*,*],[g],(:-),
+[
 	[[[h,*,*],[i]],->,true,or,true],
-	!]
+	!
+]]
 ]
-
 **/
 
 concat_list(A,[],A):-!.
@@ -197,7 +198,7 @@ concat_list(A,List,B) :-
 pp0(List) :-
 	writeln("["),
 	pp1(List),
-	writeln("]").
+	writeln("]"),!.
 
 pp1([]):-!.
 pp1(List1) :-
@@ -209,7 +210,7 @@ pp1(List1) :-
 	(term_to_atom(Variables1,Variables2),
 	concat_list("[[",[Name,",*,*],",Variables2,
 	",(:-),"],String),
-	writeln(String),pp2(Body),writeln("]")))).
+	writeln(String),writeln("["),pp2(Body),writeln("]]")))),!.
 pp1(List1) :-
 	List1=[List2|Lists3],
 	(((List2=[[_Name,*,*]]->true;List2=[[_Name,*,*],
@@ -219,14 +220,14 @@ pp1(List1) :-
 	(term_to_atom(Variables1,Variables2),
 	concat_list("[[",[Name,",*,*],",Variables2,
 	",(:-),"],String),
-	writeln(String),pp2(Body),writeln("],")))),
-	pp1(Lists3).
+	writeln(String),writeln("["),pp2(Body),writeln("]],")))),
+	pp1(Lists3),!.
 pp2([]):-!.
 pp2(List1) :-
 	List1=[List2],
-	write("\t"),write(List2),!.
+	write("\t"),writeln(List2),!.
 pp2(List1) :-
 	List1=[List2|Lists3],
 	write("\t"),write(List2),writeln(","),
-	pp2(Lists3).
+	pp2(Lists3),!.
 	
