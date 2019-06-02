@@ -201,14 +201,25 @@ pp0(List) :-
 
 pp1([]):-!.
 pp1(List1) :-
+	List1=[List2],
+	(((List2=[[_Name,*,*]]->true;List2=[[_Name,*,*],
+		_Variables]),
+	write(List2),writeln(","))->true;
+	(List2=[[Name,*,*],Variables1,(:-),Body]->
+	(term_to_atom(Variables1,Variables2),
+	concat_list("[[",[Name,",*,*],",Variables2,
+	",(:-),"],String),
+	writeln(String),pp2(Body),writeln("]")))).
+pp1(List1) :-
 	List1=[List2|Lists3],
 	(((List2=[[_Name,*,*]]->true;List2=[[_Name,*,*],
 		_Variables]),
 	write(List2),writeln(","))->true;
 	(List2=[[Name,*,*],Variables1,(:-),Body]->
 	(term_to_atom(Variables1,Variables2),
-	concat_list("[[",[Name,",*,*],",Variables2,",(:-),"],String),
-	writeln(String),pp2(Body),writeln("]")))),
+	concat_list("[[",[Name,",*,*],",Variables2,
+	",(:-),"],String),
+	writeln(String),pp2(Body),writeln("],")))),
 	pp1(Lists3).
 pp2([]):-!.
 pp2(List1) :-
