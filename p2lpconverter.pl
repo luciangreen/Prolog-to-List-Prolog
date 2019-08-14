@@ -231,3 +231,9 @@ pp2(List1) :-
 	write("\t"),write(List2),writeln(","),
 	pp2(Lists3),!.
 	
+
+pp3([]) :- !.
+pp3(List1) :-
+	List1=[List2|List3],
+	writeln1(List2),
+	pp3(List3).
