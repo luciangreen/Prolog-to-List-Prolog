@@ -1,4 +1,5 @@
-/**trace,
+/**
+trace,
 string_codes("a.\nb(C,D).\nef('A'):-(h(a)->true;true),!.",A),phrase(file(B),A),write(B).
 **/
 
