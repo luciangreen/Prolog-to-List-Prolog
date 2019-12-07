@@ -1,5 +1,4 @@
-/**
-trace,
+/**trace,
 string_codes("a.\nb(C,D).\nef('A'):-(h(a)->true;true),!.",A),phrase(file(B),A),write(B).
 **/
 
@@ -29,10 +28,10 @@ list([]) --> [].
 list([L|Ls]) --> [L], list(Ls).
 
 file([L|Ls]) --> predicate(L),newlines1(_),
-%%{writeln(L)}, %%***
+{writeln(L)}, %%***
 file(Ls), !. 
 file([L]) --> predicate(L),newlines1(_),
-%%{writeln(L)},
+{writeln(L)},
 !.
 
 %%predicate([]) --> newlines1(_).
@@ -58,6 +57,8 @@ name1([]) --> [].
 **/
 
 name1(X1) --> name10(X1).%%., X2->X1 {atom_string(X2,X1)}.
+
+name1(X1) --> name2(X1).
 
 name10(XXs) --> [X], 
 	{char_code(Ch1,X),(char_type(X,alnum)->true;(Ch1='_'->true;
@@ -117,7 +118,7 @@ varnames(Ls), !.
 varnames([L1]) --> varname1(L1),
 !.
 
-varname1("[]") --> "[","]". %%{writeln(L)}, %%***
+varname1([]) --> "[","]". %%{writeln(L)}, %%***
 varname1(L4) --> name11(L1), %%{writeln(L)}, %%***
 {%%atom_string(L1,L10),string_codes(L2,L10),
 ((atom_concat(A,_,L1),atom_length(A,1),not(is_upper(A))->L4=L1;(downcase_atom(%%L2
@@ -125,6 +126,7 @@ L1,L3),L4=[v,L3])))%%L3A
 
 %%,term_to_atom(L3A,L4)%%,atom_string(L4A,L4)
 }.
+varname1(L4) --> "(",line(L4),")".
 
 
 newlines1([X|Xs]) --> [X], {char_type(X,newline)}, newlines1(Xs), !.
