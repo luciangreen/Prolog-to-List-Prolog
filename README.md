@@ -17,6 +17,8 @@ a.
 b(C,D).
 ef(G):-(h(I)->true;true),!.
 
+Note: [a,*,*] not a, which is Simple List Prolog. [a,*,*] is for inputting into CAWPS predicate dictionary.
+
 Output: [[[a,*,*]],[[b,*,*],[c,d]],[[ef,*,*],[g],:-,[[[[h,*,*],[i]],->,true,or,true],!]]]
 
 Pretty-print List Prolog algorithm by typing e.g.:
