@@ -1,3 +1,4 @@
+:-include('../listprologinterpreter/la_strings.pl').
 /**trace,
 string_codes("a.\nb(C,D).\nef('A'):-(h(a)->true;true),!.",A),phrase(file(B),A),write(B).
 **/
@@ -61,8 +62,8 @@ name1(X1) --> name10(X1).%%., X2->X1 {atom_string(X2,X1)}.
 name1(X1) --> name2(X1).
 
 name10(XXs) --> [X], 
-	{char_code(Ch1,X),(char_type(X,alnum)->true;(Ch1='_'->true;
-	Ch1='!')),
+	{char_code(Ch1,X),(char_type(X,alnum)->true;(Ch1='_'->true;(
+	Ch1='!'->true;Ch1='.'))),
 	atom_string(CA,Ch1),downcase_atom(CA,CA2)},
 	name10(Xs), 
 	{atom_concat(CA2,Xs,XXs)}, !. 
@@ -76,13 +77,13 @@ name11(X1) --> name101(X1).%%., X2->X1 {atom_string(X2,X1)}.
 
 name101(XXs) --> [X], 
 	{char_code(Ch1,X),(char_type(X,alnum)->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
-	Ch1='!')))),
+	Ch1='!'->true;Ch1='.')))),
 	atom_string(CA2,Ch1)},%%downcase_atom(CA,CA2)},
 	name101(Xs), 
 	{atom_concat(CA2,Xs,XXs)}, !. 
 name101(XXs) --> [X], 
 	{char_code(Ch1,X),(char_type(X,alnum)->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
-	Ch1='!')))),
+	Ch1='!'->true;Ch1='.')))),
 	atom_string(XXs,Ch1)}.%%downcase_atom(CA,XXs)}, !. 
 %%name10('') --> [].
 
@@ -113,10 +114,35 @@ name2([]) --> [].**/
 spaces1([X|Xs]) --> [X], {char_type(X,space)}, spaces1(Xs), !.
 spaces1([]) --> [].
 
+/**
 varnames([L1|Ls]) --> varname1(L1),",", %%{writeln(L)}, %%***
 varnames(Ls), !. 
 varnames([L1]) --> varname1(L1),
 !.
+**/
+
+varnames(L1) --> %{trace},
+"[",varnames0(L2),"]", 
+{L1 = [L2]},
+!. 
+
+varnames(L1) --> %{trace},
+varnames0(L1), 
+!. 
+
+varnames0(L1) --> varname1(L2),lookahead1,
+	{L1=[L2]},!.
+
+varnames0(Ls2) --> varname1(L1),",", %%{writeln(L)}, %%***
+	varnames0(Ls), 
+	{append([L1],Ls,Ls2)},!. 
+
+varnames0(Ls2) --> varname1(L1),"|", %%{writeln(L)}, %%***
+	varnames0(Ls), 
+	{append_list([[L1],"|",Ls],Ls2)},!. 
+
+lookahead1(A,A) :- append(`]`,_,A).
+lookahead1(A,A) :- append(`)`,_,A).
 
 varname1([]) --> "[","]". %%{writeln(L)}, %%***
 varname1(L4) --> name11(L1), %%{writeln(L)}, %%***
@@ -127,6 +153,9 @@ L1,L3),L4=[v,L3])))%%L3A
 %%,term_to_atom(L3A,L4)%%,atom_string(L4A,L4)
 }.
 varname1(L4) --> "(",line(L4),")".
+varname1(L1) --> 
+"[",varnames0(L2),"]", 
+{L1 = [L2]},!.
 
 
 newlines1([X|Xs]) --> [X], {char_type(X,newline)}, newlines1(Xs), !.
@@ -205,6 +234,10 @@ line(Word1) -->
 		{Word1=[Word2]},!.
 %%a(_) -->",".
 %%line([]) --> newlines1(_),!.
+line11(A) --> %%spaces1(_), 
+		name1(Word11), %% name(A,B,C).
+		"(",varnames1(Varnames),",",line(A1),",",varnames1(Varnames2),")",
+		{A=[[n,Word11],[Varnames,(A1),Varnames2]]},!.
 
 
 %% **** Pretty Print
