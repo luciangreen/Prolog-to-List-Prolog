@@ -138,7 +138,7 @@ varnames0(Ls2) --> varname1(L1),",", %%{writeln(L)}, %%***
 	{append([L1],Ls,Ls2)},!. 
 
 varnames0(Ls2) --> varname1(L1),"|", %%{writeln(L)}, %%***
-	varnames0(Ls), 
+	varnames0([Ls]), 
 	{append_list([[L1],"|",Ls],Ls2)},!. 
 
 lookahead1(A,A) :- append(`]`,_,A).
