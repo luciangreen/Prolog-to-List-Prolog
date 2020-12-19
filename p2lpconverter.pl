@@ -155,7 +155,7 @@ L1,L3),L4=[v,L3])))%%L3A
 varname1(L4) --> "(",line(L4),")".
 varname1(L1) --> 
 "[",varnames0(L2),"]", 
-{L1 = [L2]},!.
+{L1 = L2},!.
 
 
 newlines1([X|Xs]) --> [X], {char_type(X,newline)}, newlines1(Xs), !.
