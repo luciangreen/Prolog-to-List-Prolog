@@ -1,4 +1,7 @@
 :-include('../listprologinterpreter/la_strings.pl').
+
+%% p2lpconverter(S1),pp0(S1,S2),writeln(S2).
+
 /**trace,
 string_codes("a.\nb(C,D).\nef('A'):-(h(a)->true;true),!.",A),phrase(file(B),A),write(B).
 **/
@@ -56,7 +59,9 @@ name1([]) --> [].
 
 name1(X1) --> name10(X11),
 	{(string_atom(X12,X11),number_string(X1,X12)->true;
-	X11=X1)}.%%., X2->X1 {atom_string(X2,X1)}.
+	((%contains_string(X11)->
+	string_atom2(X1,X11)%;X11=X1)
+	)))}.%%., X2->X1 {atom_string(X2,X1)}.
 
 name1(X1) --> name2(X1).
 
@@ -74,7 +79,9 @@ name10(XXs) --> [X],
 
 name11(X1) --> name101(X11),
 	{(string_atom(X12,X11),number_string(X1,X12)->true;
-	X11=X1)}.%%., X2->X1 {atom_string(X2,X1)}.
+	((%contains_string(X11)->
+	string_atom2(X1,X11)%;X11=X1)
+	)))}.%%., X2->X1 {atom_string(X2,X1)}.
 
 name101(XXs) --> [X], 
 	{char_code(Ch1,X),(char_type(X,alnum)->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
@@ -85,8 +92,9 @@ name101(XXs) --> [X],
 name101(XXs) --> [X], 
 	{char_code(Ch1,X),(char_type(X,alnum)->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
 	Ch1='!'->true;Ch1='.')))),
-	atom_string(XXs,Ch1)}.%%downcase_atom(CA,XXs)}, !. 
-%%name10('') --> [].
+	atom_string(CA2,Ch1)},%%downcase_atom(CA,CA2)},
+	%name101(Xs), 
+	{atom_concat(CA2,'',XXs)}, !. 
 
 name2(X1) --> name20(X1).%%, {atom_string(X2,X1)}.
 
@@ -207,12 +215,17 @@ line(A) --> %%spaces1(_),
 		(name1(_Is)|name2(_Equals)), spaces1(_), 
 		name1(Variable2), 	
 		name2(Operator), name1(Variable3), 	
-		{ %% A=B*Y 		
-		A=[[n,Operator],[Variable2,Variable3,Variable1]]},!.
+		{ %% A=B*Y 
+		v_if_string_or_atom(Variable2,Variable2a),
+		v_if_string_or_atom(Variable3,Variable3a),
+		v_if_string_or_atom(Variable1,Variable1a),
+		A=[[n,Operator],[Variable2a,Variable3a,Variable1a]]},!.
 line(A) --> %%spaces1(_), 
 		name1(Word10), spaces1(_), %% A is B
 		name2(Word21), spaces1(_), name1(Word11),
-		{A=[[n,Word21],[Word10,Word11]]},!.
+		{v_if_string_or_atom(Word10,Word10a),
+		v_if_string_or_atom(Word11,Word11a),
+		A=[[n,Word21],[Word10a,Word11a]]},!.
 line(Word1) -->
 		"(",line(Word2),")",{Word1=[Word2]},!.
 line(Word1) -->
@@ -264,46 +277,118 @@ concat_list(A,List,B) :-
 	concat_list(C,Items,B).
 **/
 
-pp0(List) :-
-	writeln("["),
-	pp1(List),
-	writeln("]"),!.
-
-pp1([]):-!.
-pp1(List1) :-
+pp0(List,String2) :-
+%trace,
+	pp1(List,'',String1),
+	concat_list(['[\n',String1],String5),
+	%replace(String3,"&","\"",String4),
+	%replace(String3,"#","'",String5),
+	string_concat(String6,B,String5),string_length(B,2),
+	string_concat(String6,'\n]',String2),
+	!.
+pp1([],S,S):-!.
+pp1(List1,S1,S2) :-
 	List1=[List2],
 	(((List2=[[n,_Name]]->true;List2=[[n,_Name],
 		_Variables]),
-	write(List2),writeln(","))->true;
+	term_to_atom(List2,List2a),
+	concat_list([S1,List2a,',\n'],S2))->true;
 	(List2=[[n,Name],Variables1,":-",Body]->
 	(term_to_atom(Variables1,Variables2),
-	concat_list(["[[[n,",Name,"]],",Variables2,
-	",\":-\","],String),
-	writeln(String),writeln("["),pp2(Body),writeln("]]")))),!.
-pp1(List1) :-
+	concat_list([S1,'[[[n,',Name,']],\n',Variables2,
+	',":-",\n['],String),
+	pp2(Body,'',B1),
+	concat_list([String,B1,',\n]],\n'],S2)))),!.
+pp1(List1,S1,S2) :-
 	List1=[List2|Lists3],
 	(((List2=[[n,_Name]]->true;List2=[[n,_Name],
 		_Variables]),
-	write(List2),writeln(","))->true;
-	(%trace,
-	List2=[[n,Name],Variables1,":-",Body]->
+	term_to_atom(List2,List2a),
+	concat_list([S1,List2a,',\n'],S3))->true;
+	(List2=[[n,Name],Variables1,":-",Body]->
 	(term_to_atom(Variables1,Variables2),
-	concat_list(["[[[n,",Name,"]],",Variables2,
-	",\":-\""],String),
-	writeln(String),writeln("["),pp2(Body),writeln("]],")))),
-	pp1(Lists3),!.
-pp2([]):-!.
-pp2(List1) :-
+	concat_list([S1,'[[[n,',Name,']],',Variables2,
+	',":-"\n['],String),
+	pp2(Body,'',B1),
+	concat_list([String,B1,',\n]],\n'],S3)))),
+	pp1(Lists3,S3,S2),!.
+pp2([],S,S):-!.
+pp2(List1,S1,S2) :-
 	List1=[List2],
-	write("\t"),writeln(List2),!.
-pp2(List1) :-
+	%write("\t")%,writeln(List2),
+	term_to_atom(List2,List2a),
+	concat_list([S1,'\t',List2a],S2),
+	!.
+pp2(List1,S1,S2) :-
 	List1=[List2|Lists3],
-	write("\t"),write(List2),writeln(","),
-	pp2(Lists3),!.
+	%write("\t"),write(List2),writeln(","),
+	term_to_atom(List2,List2a),
+	pp2(Lists3,'',S3),
+	concat_list([S1,'\t',List2a,',',S3],S2),!.
 	
-
+/**
 pp3([]) :- !.
 pp3(List1) :-
 	List1=[List2|List3],
 	writeln1(List2),
 	pp3(List3).
+**/
+
+/**
+concat_list_term(List,String) :-
+%trace,
+	findall(A,(member(Item,List),
+	%trace,
+	(atom(Item) -> Item=A;
+	term_to_atom(Item,A))
+	%notrace
+	),List1),
+	concat_list(List1,String).
+**/
+	
+contains_string(Atom) :-
+	string_concat(A,B,Atom),
+	string_length(A,1),
+	A="\"",
+	string_concat(_,C,B),
+	string_length(C,1),
+	C="\"",!.
+
+% remove " if string, leave as atom if atom
+
+string_atom2(String1,Atom1) :-
+	contains_string(Atom1),
+	delete1(Atom1,"\"",String1),
+	%string_atom(String1,String2),
+	%replace(String2,"'","#",String1),
+	%string_atom(String1,String3),
+	!.
+string_atom2(String1,Atom1) :-
+	atom(Atom1),%String1=Atom1,
+	
+	%replace(Atom1,"\"","&",String2),
+	delete1(Atom1,"'",%"#",
+	String3),
+	
+	string_atom(String3,String1),
+	!.
+	
+replace(A1,Find,Replace,F) :-
+string_concat("%",A1,A2),
+string_concat(A2,"%",A),		split_string(A,Find,Find,B),findall([C,Replace],(member(C,B)),D),maplist(append,[D],[E]),concat_list(E,F1),string_concat(F2,G,F1),string_length(G,1),
+	string_concat("%",F3,F2),	
+	string_concat(F,"%",F3).
+
+v_if_string_or_atom(String_or_atom,V) :-
+	((string(String_or_atom)->true;
+	atom(String_or_atom))->
+	V=[v,String_or_atom];
+	V=String_or_atom),!.
+	
+delete1(A	,Find,F) :-
+%string_concat("%",A1,A2),
+%string_concat(A2,"%",A),
+		split_string(A,Find,"",B),%findall([C,Replace],(member(C,B)),D),
+		maplist(append,[[B]],[E]),concat_list(E,F).%,string_concat(F,G,F1),string_length(G,1).
+	%string_concat("%",F3,F2),	
+	%string_concat(F,"%",F3).
