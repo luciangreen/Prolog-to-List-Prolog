@@ -5,9 +5,6 @@ string_codes("a.\nb(C,D).\nef('A'):-(h(a)->true;true),!.",A),phrase(file(B),A),w
 
 %% [[[n,a]],[[n,b],[[v,c],[v,d]]],[[n,ef],['A'],:-,[[[n,->],[[[n,h],[a]],[[n,true]],[[n,true]]]],[[n,cut]]]]]
 
-%% :- and -> have to be replaced with ":-" and "->" afterwards
-
-%% ['\'A\''] change to ['A']
 
 use_module(library(pio)).
 use_module(library(dcg/basics)).
@@ -50,7 +47,7 @@ predicate(A) -->
 		"(",varnames(Varnames),")",
 		spaces1(_),":-",newlines1(_),
 		lines(L), ".",
-		{A=[[n,Word11],Varnames,":-",L]
+		{A=[[n,Word11],Varnames,"\":-\"",L]
 		}.
 		
 /**name1([L3|Xs]) --> [X], {string_codes(L2,[X]),(char_type(X,alnum)->true;L2="_"),downcase_atom(L2,L3)}, name1(Xs), !.
@@ -216,10 +213,10 @@ line(Word1) -->
 		"(",line(Word2),")",{Word1=[Word2]},!.
 line(Word1) -->
 		"(",line(Word2),"->",line(Word3),";",line(Word4),")",
-		{Word1=[[n,"->"],[Word2,Word3,Word4]]},!.
+		{Word1=[[n,"\"->\""],[Word2,Word3,Word4]]},!.
 line(Word1) -->
 		"(",line(Word2),"->",line(Word3),")",
-		{Word1=[[n,"->"],[Word2,Word3]]},!.
+		{Word1=[[n,"\"->\""],[Word2,Word3]]},!.
 line(Word1) -->
 		"(",line(Word2),";",line(Word3),")",
 		{Word1=[[n,or],[Word2,Word3]]},!.
