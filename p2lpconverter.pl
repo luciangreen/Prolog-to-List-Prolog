@@ -11,14 +11,14 @@ use_module(library(dcg/basics)).
 
 :- include('la_strings.pl').
 
-p2lpconverter :-
+p2lpconverter(List3) :-
 	File1="test1.pl",
-	readfile(File1,"test1.pl file read error.").
+	readfile(File1,"test1.pl file read error.",List3).
 	
-readfile(List1,Error) :-
+readfile(List1,Error,List3) :-
 	phrase_from_file_s(string(List6), List1),
-	(phrase(file(List3),List6)->true;(writeln(Error),abort)),
-	writeln1(List3)	.
+	(phrase(file(List3),List6)->true;(writeln(Error),abort)).
+	%writeln1(List3)	.
 
 string(String) --> list(String).
 
@@ -26,10 +26,10 @@ list([]) --> [].
 list([L|Ls]) --> [L], list(Ls).
 
 file([L|Ls]) --> predicate(L),newlines1(_),
-{writeln(L)}, %%***
+%{writeln1(L)}, %%***
 file(Ls), !. 
 file([L]) --> predicate(L),newlines1(_),
-{writeln(L)},
+%{writeln1(L)},
 !.
 
 %%predicate([]) --> newlines1(_).
@@ -47,14 +47,16 @@ predicate(A) -->
 		"(",varnames(Varnames),")",
 		spaces1(_),":-",newlines1(_),
 		lines(L), ".",
-		{A=[[n,Word11],Varnames,"\":-\"",L]
+		{A=[[n,Word11],Varnames,":-",L]
 		}.
 		
 /**name1([L3|Xs]) --> [X], {string_codes(L2,[X]),(char_type(X,alnum)->true;L2="_"),downcase_atom(L2,L3)}, name1(Xs), !.
 name1([]) --> [].
 **/
 
-name1(X1) --> name10(X1).%%., X2->X1 {atom_string(X2,X1)}.
+name1(X1) --> name10(X11),
+	{(string_atom(X12,X11),number_string(X1,X12)->true;
+	X11=X1)}.%%., X2->X1 {atom_string(X2,X1)}.
 
 name1(X1) --> name2(X1).
 
@@ -70,7 +72,9 @@ name10(XXs) --> [X],
 	atom_string(CA,Ch1),downcase_atom(CA,XXs)}, !. 
 %%name10('') --> [].
 
-name11(X1) --> name101(X1).%%., X2->X1 {atom_string(X2,X1)}.
+name11(X1) --> name101(X11),
+	{(string_atom(X12,X11),number_string(X1,X12)->true;
+	X11=X1)}.%%., X2->X1 {atom_string(X2,X1)}.
 
 name101(XXs) --> [X], 
 	{char_code(Ch1,X),(char_type(X,alnum)->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
@@ -213,10 +217,10 @@ line(Word1) -->
 		"(",line(Word2),")",{Word1=[Word2]},!.
 line(Word1) -->
 		"(",line(Word2),"->",line(Word3),";",line(Word4),")",
-		{Word1=[[n,"\"->\""],[Word2,Word3,Word4]]},!.
+		{Word1=[[n,"->"],[Word2,Word3,Word4]]},!.
 line(Word1) -->
 		"(",line(Word2),"->",line(Word3),")",
-		{Word1=[[n,"\"->\""],[Word2,Word3]]},!.
+		{Word1=[[n,"->"],[Word2,Word3]]},!.
 line(Word1) -->
 		"(",line(Word2),";",line(Word3),")",
 		{Word1=[[n,or],[Word2,Word3]]},!.
@@ -252,13 +256,13 @@ line11(A) --> %%spaces1(_),
 ]]
 ]
 **/
-
+/**	
 concat_list(A,[],A):-!.
 concat_list(A,List,B) :-
 	List=[Item|Items],
 	string_concat(A,Item,C),
 	concat_list(C,Items,B).
-
+**/
 
 pp0(List) :-
 	writeln("["),
@@ -268,23 +272,24 @@ pp0(List) :-
 pp1([]):-!.
 pp1(List1) :-
 	List1=[List2],
-	(((List2=[[_Name]]->true;List2=[[_Name],
+	(((List2=[[n,_Name]]->true;List2=[[n,_Name],
 		_Variables]),
 	write(List2),writeln(","))->true;
-	(List2=[[Name],Variables1,(:-),Body]->
+	(List2=[[n,Name],Variables1,":-",Body]->
 	(term_to_atom(Variables1,Variables2),
-	concat_list("[[",[Name,"],",Variables2,
-	",(:-),"],String),
+	concat_list(["[[[n,",Name,"]],",Variables2,
+	",\":-\","],String),
 	writeln(String),writeln("["),pp2(Body),writeln("]]")))),!.
 pp1(List1) :-
 	List1=[List2|Lists3],
-	(((List2=[[_Name]]->true;List2=[[_Name],
+	(((List2=[[n,_Name]]->true;List2=[[n,_Name],
 		_Variables]),
 	write(List2),writeln(","))->true;
-	(List2=[[Name],Variables1,(:-),Body]->
+	(%trace,
+	List2=[[n,Name],Variables1,":-",Body]->
 	(term_to_atom(Variables1,Variables2),
-	concat_list("[[",[Name,"],",Variables2,
-	",(:-),"],String),
+	concat_list(["[[[n,",Name,"]],",Variables2,
+	",\":-\""],String),
 	writeln(String),writeln("["),pp2(Body),writeln("]],")))),
 	pp1(Lists3),!.
 pp2([]):-!.

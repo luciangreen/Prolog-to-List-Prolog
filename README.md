@@ -19,13 +19,7 @@ Load each file into SWI-Prolog using `['la_strings.pl'].` and `['p2lpconverter.p
 
 Run:
 
-Convert Prolog code to List Prolog code by copying Prolog algorithm into `test1.pl` and running: `p2lpconverter.`
-
-```
-a.\nb(C,D).\nef('A'):-(h(a)->true;true),!.
-
-[[[n,a]],[[n,b],[[v,c],[v,d]]],[[n,ef],['A'],:-,[[[n,->],[[[n,h],[a]],[[n,true]],[[n,true]]]],[[n,cut]]]]]
-```
+Convert Prolog code to List Prolog code by copying Prolog algorithm into `test1.pl` and running: `p2lpconverter(S),pp0(S).`
 
 e.g.
 ```
@@ -48,24 +42,36 @@ ef(G):-(h(I)->true;true),!.
 a([A]).
 a(A).
 
-[[n,a],[[[v,a],[v,b],[v,c]]]]
-[[n,a],[[[v,a],[v,b]]]]
-[[n,a],[[[v,a],|,[v,c]]]]
-[[n,a],[[[[v,a],[v,b]]]]]
-[[n,a],[[v,a],[]]]
-[[n,a],[[v,a],[[v,a]]]]
-[[n,a],[[[[v,a]],|,[v,c]]]]
-[[n,a],[[v,a],[[[v,a]],|,[v,c]]]]
-[[n,a],[[v,a],[[[v,a],[v,b]],|,[[v,c],[v,d]]]]]
-[[n,ba],[12]]
-[[n,a],[1.1]]
-[[n,a],["dsf"]]
-[[n,a],['dd']]
-[[n,a],[[v,a]],":-",[[[n,findall],[[v,a],[[n,hello],[[v,a]]],[v,b]]]]]
-[[n,a],[[[v,a]]],":-",[[[n,+],[1,1,a]]]]
-[[n,ef],[[v,g]],":-",[[[n,"->"],[[[n,h],[[v,i]]],[[n,true]],[[n,true]]]],[[n,cut]]]]
-[[n,a],[[[v,a]]]]
-[[n,a],[[v,a]]]
+[
+[[n,a],[[[v,a],[v,b],[v,c]]]],
+[[n,a],[[[v,a],[v,b]]]],
+[[n,a],[[[v,a],|,[v,c]]]],
+[[n,a],[[[[v,a],[v,b]]]]],
+[[n,a],[[v,a],[]]],
+[[n,a],[[v,a],[[v,a]]]],
+[[n,a],[[[[v,a]],|,[v,c]]]],
+[[n,a],[[v,a],[[[v,a]],|,[v,c]]]],
+[[n,a],[[v,a],[[[v,a],[v,b]],|,[[v,c],[v,d]]]]],
+[[n,ba],[12]],
+[[n,a],[1.1]],
+[[n,a],["dsf"]],
+[[n,a],['dd']],
+[[[n,a]],[[v,a]],":-"
+[
+	[[n,findall],[[v,a],[[n,hello],[[v,a]]],[v,b]]]
+]],
+[[[n,a]],[[[v,a]]],":-"
+[
+	[[n,+],[1,1,a]]
+]],
+[[[n,ef]],[[v,g]],":-"
+[
+	[[n,->],[[[n,h],[[v,i]]],[[n,true]],[[n,true]]]],
+	[[n,cut]]
+]],
+[[n,a],[[[v,a]]]],
+[[n,a],[[v,a]]],
+]
 ```
 
 # Prolog to Simple List Prolog
