@@ -3,7 +3,7 @@ Converts Prolog algorithms to List Prolog algorithms
 
 * Prerequisites
 
-a href="https://github.com/luciangreen/listprologinterpreter">List Prolog interpreter</a>
+<a href="https://github.com/luciangreen/listprologinterpreter">List Prolog interpreter</a>
 
 # Installation from List Prolog Package Manager (LPPM)
 
