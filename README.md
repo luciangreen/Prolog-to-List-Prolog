@@ -18,7 +18,7 @@ loading LPPM with `['lppm'].` then installing the package by running `lppm_insta
 # Prolog to List Prolog
 
 Install:
-Load each file into SWI-Prolog using `['la_strings.pl'].` and `['p2lpconverter.pl'].`
+Load each file into SWI-Prolog using `['p2lpconverter.pl'].`
 
 Run:
 
