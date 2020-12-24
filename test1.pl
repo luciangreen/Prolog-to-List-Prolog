@@ -11,7 +11,8 @@ ba(12).
 a(1.1).
 a("dsf").
 a('dd').
-a(A):-findall(A,(hello(A)),B).
+a(A):-findall(A,hello(A),B).
+a(A):-findall(A,(hello(A),hello(A)),B).
 a([A]):-A is 1+1.
 ef(G):-(h(I)->true;true),!.
 a([A]).

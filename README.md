@@ -39,11 +39,13 @@ ba(12).
 a(1.1).
 a("dsf").
 a('dd').
-a(A):-findall(A,(hello(A)),B).
+a(A):-findall(A,hello(A),B).
+a(A):-findall(A,(hello(A),hello(A)),B).
 a([A]):-A is 1+1.
 ef(G):-(h(I)->true;true),!.
 a([A]).
 a(A).
+
 
 [
 [[n,a],[[[v,a],[v,b],[v,c]]]],
@@ -61,6 +63,9 @@ a(A).
 [[n,a],[dd]],
 [[[n,a]],[[v,a]],":-"
 [	[[n,findall],[[v,a],[[n,hello],[[v,a]]],[v,b]]],
+]],
+[[[n,a]],[[v,a]],":-"
+[	[[n,findall],[[v,a],[[[n,hello],[[v,a]]],[[n,hello],[[v,a]]]],[v,b]]],
 ]],
 [[[n,a]],[[[v,a]]],":-"
 [	[[n,+],[1,1,[v,a]]],
