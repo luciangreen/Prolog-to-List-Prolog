@@ -1,24 +1,33 @@
 # Prolog-to-List-Prolog
 Converts Prolog algorithms to List Prolog algorithms
 
-* Prerequisites
+# Prerequisites
 
-<a href="https://github.com/luciangreen/listprologinterpreter">List Prolog interpreter</a>
+* Please download and install SWI-Prolog for your machine at `https://www.swi-prolog.org/build/`.
 
-# Installation from List Prolog Package Manager (LPPM)
+# 1. Install manually
 
-* Optionally, you can install from LPPM by installing <a href="https://www.swi-prolog.org/build/">SWI-Prolog</a> for your machine, downloading the <a href="https://github.com/luciangreen/List-Prolog-Package-Manager">LPPM Repository</a>,
+Download <a href="http://github.com/luciangreen/Prolog-to-List-Prolog/">this repository</a> and the <a href="https://github.com/luciangreen/listprologinterpreter">List Prolog interpreter</a>.
+
+# 2. Or Install from List Prolog Package Manager (LPPM)
+
+* Download the <a href="https://github.com/luciangreen/List-Prolog-Package-Manager">LPPM Repository</a>:
+
 ```
 git clone https://github.com/luciangreen/List-Prolog-Package-Manager.git
 cd List-Prolog-Package-Manager
 swipl
+['lppm'].
+lppm_install("luciangreen","Prolog-to-List-Prolog")
+halt
 ```
-loading LPPM with `['lppm'].` then installing the package by running `lppm_install("luciangreen","Prolog-to-List-Prolog").`.
 
-# Prolog to List Prolog
+# Running Prolog to List Prolog
 
-Install:
-Load each file into SWI-Prolog using `['p2lpconverter.pl'].`
+* In Shell:
+`cd Prolog-to-List-Prolog`
+`swipl`
+`['p2lpconverter.pl'].`
 
 Run:
 
