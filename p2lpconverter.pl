@@ -421,8 +421,8 @@ concat_list(A,List,B) :-
 	concat_list(C,Items,B).
 **/
 
-symbol_1(":-").
-symbol_1("->").
+symbol_1(":-","\":-\"").
+symbol_1("->","\"->\"").
 
 pp0(List,String2) :-
 %trace,
@@ -435,7 +435,7 @@ pp0(List,String2) :-
 	!.
 pp1([],S,S):-!.
 pp1(List1,S1,S2) :-
-	symbol_1(Symbol),
+	symbol_1(Symbol,Symbol1),
 	List1=[List2],
 	(((List2=[[n,_Name]]->true;List2=[[n,_Name],
 		_Variables]),
@@ -444,11 +444,11 @@ pp1(List1,S1,S2) :-
 	(List2=[[n,Name],Variables1,Symbol,Body]->
 	(term_to_atom(Variables1,Variables2),
 	concat_list([S1,'[[n,',Name,'],\n',Variables2,
-	',',Symbol,',\n['],String),
+	',',Symbol1,',\n['],String),
 	pp2(Body,'',B1),
 	concat_list([String,B1,',\n]],\n'],S2)))),!.
 pp1(List1,S1,S2) :-
-	symbol_1(Symbol),
+	symbol_1(Symbol,Symbol1),
 	List1=[List2|Lists3],
 	(((List2=[[n,_Name]]->true;List2=[[n,_Name],
 		_Variables]),
@@ -457,7 +457,7 @@ pp1(List1,S1,S2) :-
 	(List2=[[n,Name],Variables1,Symbol,Body]->
 	(term_to_atom(Variables1,Variables2),
 	concat_list([S1,'[[n,',Name,'],',Variables2,
-	',',Symbol,'\n['],String),
+	',',Symbol1,'\n['],String),
 	pp2(Body,'',B1),
 	concat_list([String,B1,',\n]],\n'],S3)))),
 	pp1(Lists3,S3,S2),!.
