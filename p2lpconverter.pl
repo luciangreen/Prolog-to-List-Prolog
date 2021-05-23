@@ -466,14 +466,14 @@ pp2(List1,S1,S2) :-
 	List1=[List2],
 	%write("\t")%,writeln(List2),
 	term_to_atom(List2,List2a),
-	concat_list([S1,'\t',List2a],S2),
+	concat_list([S1,'\n','\t',List2a],S2),
 	!.
 pp2(List1,S1,S2) :-
 	List1=[List2|Lists3],
 	%write("\t"),write(List2),writeln(","),
 	term_to_atom(List2,List2a),
 	pp2(Lists3,'',S3),
-	concat_list([S1,'\t',List2a,',',S3],S2),!.
+	concat_list([S1,'\n','\t',List2a,',',S3],S2),!.
 	
 /**
 pp3([]) :- !.
