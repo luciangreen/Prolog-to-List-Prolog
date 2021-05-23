@@ -91,8 +91,7 @@ compound21(T,U)->item(I),lookahead("]"),{wrap(I,Itemname1),append(T,Itemname1,V)
 ]],
 [[n,a],[[[v,a]]]],
 [[n,a],[[v,a]]],
-[[n,compound21],
-[[v,t],[v,u]],"->",
+[[n,compound21],[[v,t],[v,u]],"->",
 [
 	[[n,item],[[v,i]]],
 	[[n,lookahead],["]"]],

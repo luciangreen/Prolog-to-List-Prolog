@@ -443,7 +443,7 @@ pp1(List1,S1,S2) :-
 	concat_list([S1,List2a,',\n'],S2))->true;
 	(List2=[[n,Name],Variables1,Symbol,Body]->
 	(term_to_atom(Variables1,Variables2),
-	concat_list([S1,'[[n,',Name,'],\n',Variables2,
+	concat_list([S1,'[[n,',Name,'],',Variables2,
 	',',Symbol1,',\n['],String),
 	pp2(Body,'',B1),
 	concat_list([String,B1,',\n]],\n'],S2)))),!.
