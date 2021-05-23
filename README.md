@@ -74,20 +74,20 @@ compound21(T,U)->item(I),lookahead("]"),{wrap(I,Itemname1),append(T,Itemname1,V)
 [[n,a],[dd]],
 [[n,a],[[v,a]],":-"
 [
-	[[n,findall],[[v,a],[[n,hello],[[v,a]]],[v,b]]],
+	[[n,findall],[[v,a],[[n,hello],[[v,a]]],[v,b]]]
 ]],
 [[n,a],[[v,a]],":-"
 [
-	[[n,findall],[[v,a],[[[n,hello],[[v,a]]],[[n,hello],[[v,a]]]],[v,b]]],
+	[[n,findall],[[v,a],[[[n,hello],[[v,a]]],[[n,hello],[[v,a]]]],[v,b]]]
 ]],
 [[n,a],[[[v,a]]],":-"
 [
-	[[n,+],[1,1,[v,a]]],
+	[[n,+],[1,1,[v,a]]]
 ]],
 [[n,ef],[[v,g]],":-"
 [
 	[[n,"->"],[[[n,h],[[v,i]]],[[n,true]],[[n,true]]]],
-	[[n,cut]],
+	[[n,cut]]
 ]],
 [[n,a],[[[v,a]]]],
 [[n,a],[[v,a]]],
@@ -96,7 +96,7 @@ compound21(T,U)->item(I),lookahead("]"),{wrap(I,Itemname1),append(T,Itemname1,V)
 	[[n,item],[[v,i]]],
 	[[n,lookahead],["]"]],
 	[[n,code],[[[n,wrap],[[v,i],[v,itemname1]]],[[n,append],[[v,t],[v,itemname1],[v,v]]]]],
-	[[n,compound212],[[v,v],[v,u]]],
+	[[n,compound212],[[v,v],[v,u]]]
 ]]
 ]
 ```
