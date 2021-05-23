@@ -52,6 +52,13 @@ predicate(A) -->
 		lines(L), ".",
 		{A=[[n,Word11],Varnames,":-",L]
 		}.
+predicate(A) -->
+		name1(Word11),
+		"(",varnames(Varnames),")",
+		spaces1(_),"->",newlines1(_),
+		lines(L), ".",
+		{A=[[n,Word11],Varnames,"->",L]
+		}.
 		
 /**name1([L3|Xs]) --> [X], {string_codes(L2,[X]),(char_type(X,alnum)->true;L2="_"),downcase_atom(L2,L3)}, name1(Xs), !.
 name1([]) --> [].
@@ -83,18 +90,113 @@ name11(X1) --> name101(X11),
 	string_atom2(X1,X11)%;X11=X1)
 	)))}.%%., X2->X1 {atom_string(X2,X1)}.
 
-name101(XXs) --> [X], 
-	{char_code(Ch1,X),(char_type(X,alnum)->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
-	Ch1='!'->true;Ch1='.')))),
+/**
+\"'a'\"
+\"\\\"a\\\"\"
+'"a"'
+'\\'a\\''
+**/
+
+name101(XXs) --> "'",name1010(XXs1),"'", 
+	{atom_concat_list(['\'',XXs1,'\''],XXs)}, !. 
+	
+name1010(XXs) --> [X],[Y], 
+	{char_code(Ch1,X),char_code(Ch2,Y),%char_type(X,ascii),%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
+	%Ch1='!'->true;Ch1='.')))),
+	Ch1='\\',Ch2='\'',
+	atom_string(CA2,Ch1),atom_string(CA22,Ch2)},%%downcase_atom(CA,CA2)},
+	name1010(Xs), 
+	{atom_concat_list([CA2,CA22,Xs],XXs)}, !. 
+name1010(XXs) --> [X], [Y],
+	{char_code(Ch1,X),char_code(Ch2,Y),%char_type(X,ascii),%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
+	%Ch1='!'->true;Ch1='.')))),
+	Ch1='\\',Ch2='\'',
+	atom_string(CA2,Ch1),atom_string(CA22,Ch2)},%%downcase_atom(CA,CA2)},
+	%name101(Xs), 
+	{atom_concat_list([CA2,CA22,''],XXs)}, !. 
+
+name1010(XXs) --> [X],
+{char_code(Ch1,X),char_type(X,ascii),%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
+	%Ch1='!'->true;Ch1='.')))),
+	not(Ch1='\''),
 	atom_string(CA2,Ch1)},%%downcase_atom(CA,CA2)},
-	name101(Xs), 
+	name1010(Xs), 
 	{atom_concat(CA2,Xs,XXs)}, !. 
-name101(XXs) --> [X], 
-	{char_code(Ch1,X),(char_type(X,alnum)->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
-	Ch1='!'->true;Ch1='.')))),
+name1010(XXs) --> [X], 
+	{char_code(Ch1,X),char_type(X,ascii),%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
+	%Ch1='!'->true;Ch1='.')))),
+	not(Ch1='\''),
 	atom_string(CA2,Ch1)},%%downcase_atom(CA,CA2)},
 	%name101(Xs), 
 	{atom_concat(CA2,'',XXs)}, !. 
+
+
+name101(XXs) --> "\"",name1011(XXs1),"\"", 
+	{atom_concat_list(['"',XXs1,'"'],XXs)}, !. 
+	
+name1011(XXs) --> [X],[Y], 
+	{char_code(Ch1,X),char_code(Ch2,Y),%char_type(X,ascii),%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
+	%Ch1='!'->true;Ch1='.')))),
+	Ch1='\\',Ch2='"',
+	atom_string(CA2,Ch1),atom_string(CA22,Ch2)},%%downcase_atom(CA,CA2)},
+	name1011(Xs), 
+	{atom_concat_list([CA2,CA22,Xs],XXs)}, !. 
+name1011(XXs) --> [X], [Y],
+	{char_code(Ch1,X),char_code(Ch2,Y),%char_type(X,ascii),%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
+	%Ch1='!'->true;Ch1='.')))),
+	Ch1='\\',Ch2='"',
+	atom_string(CA2,Ch1),atom_string(CA22,Ch2)},%%downcase_atom(CA,CA2)},
+	%name101(Xs), 
+	{atom_concat_list([CA2,CA22,''],XXs)}, !. 
+
+name1011(XXs) --> [X], 
+	{char_code(Ch1,X),char_type(X,ascii),%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
+	%Ch1='!'->true;Ch1='.')))),
+	not(Ch1='"'),
+	atom_string(CA2,Ch1)},%%downcase_atom(CA,CA2)},
+	name1011(Xs), 
+	{atom_concat(CA2,Xs,XXs)}, !. 
+name1011(XXs) --> [X], 
+	{char_code(Ch1,X),char_type(X,ascii),%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
+	%Ch1='!'->true;Ch1='.')))),
+	not(Ch1='"'),
+	atom_string(CA2,Ch1)},%%downcase_atom(CA,CA2)},
+	%name101(Xs), 
+	{atom_concat(CA2,'',XXs)}, !. 
+
+
+
+name101(XXs) --> name1012(XXs1),
+	{atom_concat_list([XXs1],XXs)}, !. 
+
+name1012(XXs) --> 
+	[X],
+	lookahead2([',',')',']','|'
+		]),
+	{char_code(Ch1,X),char_type(X,ascii),
+	%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
+	%Ch1='!'->true;Ch1='.')))),
+	not(Ch1='['),not(Ch1=']'),
+	atom_string(CA2,Ch1)},%%downcase_atom(CA,CA2)},
+	%name101(Xs), 
+	{atom_concat(CA2,'',XXs)}, !. 
+
+
+name1012(XXs) --> %{trace},
+	[X], %lookahead2([',',')'%,']'
+	%]),
+	%{trace},
+	%lookahead3(A),
+	{%char_code(ChA,A),not(ChA=','),not(ChA=')'),
+	char_code(Ch1,X),char_type(X,ascii),
+	%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
+	%Ch1='!'->true;Ch1='.')))),
+	%not(Ch1=','),
+	not(Ch1='['),not(Ch1=']'),
+	atom_string(CA2,Ch1)},%%downcase_atom(CA,CA2)},
+	name1012(Xs), 
+	{atom_concat(CA2,Xs,XXs)}, !. 
+
 
 name2(X1) --> name20(X1).%%, {atom_string(X2,X1)}.
 
@@ -161,6 +263,12 @@ varnames0(Ls2) --> varname1(L1),"|", %%{writeln(L)}, %%***
 lookahead1(A,A) :- append(`]`,_,A).
 lookahead1(A,A) :- append(`)`,_,A).
 %lookahead1(A,A) :- append(`,`,_,A).
+
+lookahead2(B1,A,A):-
+%trace,
+	member(B,B1),
+	string_codes(B,B2),
+	append(B2,_D,A).
 
 varname1([]) --> "[","]". %%{writeln(L)}, %%***
 varname1(L4) --> name11(L1), %%{writeln(L)}, %%***
@@ -256,6 +364,8 @@ line(A) --> %%spaces1(_),
 		"(",varnames01(Varnames),",",line(A1),",",varnames01(Varnames2),")",
 		{A=[[n,Word11],[Varnames,A1,Varnames2]]},!.
 		
+line(Word1) -->
+		"{",line(Word2),"}",{Word1=[[n,code],Word2]},!.
 		
 line(Word1) -->
 		"(",line(Word2),")",{Word1=[Word2]},!.
@@ -280,6 +390,9 @@ line([[n,Word]]) --> %%spaces1(_),
 line(Word1) -->
 		"(",lines(Word2),")",
 		{Word1=[Word2]},!.
+line(Word1) -->
+		"{",lines(Word2),"}",
+		{Word1=[[n,code],Word2]},!.
 
 %%a(_) -->",".
 %%line([]) --> newlines1(_),!.
@@ -308,6 +421,9 @@ concat_list(A,List,B) :-
 	concat_list(C,Items,B).
 **/
 
+symbol_1(":-").
+symbol_1("->").
+
 pp0(List,String2) :-
 %trace,
 	pp1(List,'',String1),
@@ -319,27 +435,29 @@ pp0(List,String2) :-
 	!.
 pp1([],S,S):-!.
 pp1(List1,S1,S2) :-
+	symbol_1(Symbol),
 	List1=[List2],
 	(((List2=[[n,_Name]]->true;List2=[[n,_Name],
 		_Variables]),
 	term_to_atom(List2,List2a),
 	concat_list([S1,List2a,',\n'],S2))->true;
-	(List2=[[n,Name],Variables1,":-",Body]->
+	(List2=[[n,Name],Variables1,Symbol,Body]->
 	(term_to_atom(Variables1,Variables2),
-	concat_list([S1,'[[[n,',Name,']],\n',Variables2,
-	',":-",\n['],String),
+	concat_list([S1,'[[n,',Name,'],\n',Variables2,
+	',',Symbol,',\n['],String),
 	pp2(Body,'',B1),
 	concat_list([String,B1,',\n]],\n'],S2)))),!.
 pp1(List1,S1,S2) :-
+	symbol_1(Symbol),
 	List1=[List2|Lists3],
 	(((List2=[[n,_Name]]->true;List2=[[n,_Name],
 		_Variables]),
 	term_to_atom(List2,List2a),
 	concat_list([S1,List2a,',\n'],S3))->true;
-	(List2=[[n,Name],Variables1,":-",Body]->
+	(List2=[[n,Name],Variables1,Symbol,Body]->
 	(term_to_atom(Variables1,Variables2),
-	concat_list([S1,'[[[n,',Name,']],',Variables2,
-	',":-"\n['],String),
+	concat_list([S1,'[[n,',Name,'],',Variables2,
+	',',Symbol,'\n['],String),
 	pp2(Body,'',B1),
 	concat_list([String,B1,',\n]],\n'],S3)))),
 	pp1(Lists3,S3,S2),!.

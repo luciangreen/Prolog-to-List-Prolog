@@ -8,6 +8,7 @@ a([[A]|C]).
 a(A,[[A]|C]).
 a(A,[[A,B]|[C,D]]).
 ba(12).
+ba(12,1).
 a(1.1).
 a("dsf").
 a('dd').
@@ -17,3 +18,4 @@ a([A]):-A is 1+1.
 ef(G):-(h(I)->true;true),!.
 a([A]).
 a(A).
+compound21(T,U)->item(I),lookahead("]"),{wrap(I,Itemname1),append(T,Itemname1,V)},compound212(V,U).
