@@ -18,7 +18,7 @@ pp1([],S,S):-!.
 pp1(List1,S1,S2) :-
 	symbol_1(Symbol,Symbol1),
 	List1=[List2],
-	(((List2=[[N1,_Name]]->true;List2=[[N1,_Name],
+	(((List2=[[_N10,_Name]]->true;List2=[[_N10,_Name],
 		_Variables]),
 	term_to_atom(List2,List2a),
 	concat_list([S1,List2a,',\n'],S2))->true;
@@ -33,7 +33,7 @@ pp1(List1,S1,S2) :-
 pp1(List1,S1,S2) :-
 	symbol_1(Symbol,Symbol1),
 	List1=[List2|Lists3],
-	(((List2=[[N1,_Name]]->true;List2=[[N1,_Name],
+	(((List2=[[_N10,_Name]]->true;List2=[[_N10,_Name],
 		_Variables]),
 	term_to_atom(List2,List2a),
 	concat_list([S1,List2a,',\n'],S3))->true;
