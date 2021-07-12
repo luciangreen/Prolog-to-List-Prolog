@@ -305,7 +305,7 @@ lookahead2(B1,A,A):-
 varname1([]) --> "[","]". %%{writeln(L)}, %%***
 varname1(L4) --> name11(L1), %%{writeln(L)}, %%***
 {%trace,%%atom_string(L1,L10),string_codes(L2,L10),
-((atom_concat(A,_,L1),atom_length(A,1),not(is_upper(A))->L4=L1;(downcase_atom(%%L2
+(((string(L1)->true;(atom_concat(A,_,L1),atom_length(A,1),not(is_upper(A))))->L4=L1;(downcase_atom(%%L2
 L1,L3),L4=[v,L3])))%%L3A
 
 %%,term_to_atom(L3A,L4)%%,atom_string(L4A,L4)
@@ -354,6 +354,13 @@ lines(Ls), !.
 lines([L]) --> line(L), 
 %%{writeln(L)},
 !.
+
+line(A) --> %%spaces1(_), 
+		name1(Word11), %% name(A,B,C)
+		{%trace,
+		Word11=not},
+		"(",lines(Lines),")",
+		{A=[[n,Word11],[Lines]]},!.
 
 line(A) --> %%spaces1(_), 
 		name1(Word11), %% name(A,B,C).
