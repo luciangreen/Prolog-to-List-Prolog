@@ -459,6 +459,18 @@ line(A) --> %%spaces1(_),
 		{v_if_string_or_atom(Word10,Word10a),
 		%v_if_string_or_atom(Word11,Word11a),
 		A=[[n,=],[Word10a,Word11]]},!.
+line(A) --> %%spaces1(_), 
+		name1(Word10),{%trace,
+		not(Word10=findall)},
+		%spaces1(_), 
+		%% A=B
+		"=",
+		%name2(Word21),
+		 %spaces1(_), 
+		name1(Word11),
+		{v_if_string_or_atom(Word10,Word10a),
+		v_if_string_or_atom(Word11,Word11a),
+		A=[[n,=],[Word10a,Word11a]]},!.
 
 line(A) --> %%spaces1(_), 
 		name1(Word11), %% name(A,B,C)
