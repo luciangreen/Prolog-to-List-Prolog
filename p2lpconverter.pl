@@ -49,7 +49,7 @@ predicate(A) -->
 predicate(A) -->
 		name1(Word11),
 		"(",varnames(Varnames),")",
-		spaces1(_),":-",newlines1(_),
+		spaces1(_),":-",newlines1(_),%{trace},
 		lines(L), ".",
 		{A=[[n,Word11],Varnames,":-",L]
 		}.
@@ -241,29 +241,60 @@ varnames01(L1) --> %{trace},
 varnames01(L1) --> varname1(L2),
 	{L1=L2},!.
 
+varnames(L3) --> %{trace},
+"[",varnames0(L1),"]",",",varnames(L2),
+	{append([L1],L2,L3)},!. 
+
+
+varnames(L3) --> %{trace},
+"[",varnames0(L1),"]","|",varnames(L2),
+	{maplist(append,[[[[L1],"|",L2]]],[L3])},!. 
+
+
+
 varnames(L1) --> %{trace},
 "[",varnames0(L2),"]", 
 {L1 = [L2]},
+!. 
+
+
+
+varnames(L1) --> %{trace},
+"[","]",",",varnames(L2),
+	{append([[]],L2,L1)},!. 
+
+varnames(L1) --> %{trace},
+"[","]","|",varnames(L2),
+	{maplist(append,[[[[[]],"|",L2]]],[L1])},!. 
+
+
+
+varnames(L1) --> %{trace},
+"[","]", 
+{L1 = []},
 !. 
 
 varnames(L1) --> %{trace},
 varnames0(L1), 
 !. 
 
-varnames0(L1) --> varname1(L2),lookahead1,
+varnames0(L1) --> varname1(L2),%{trace},
+lookahead1,%{notrace},
 	{L1=[L2]},!.
 
-varnames0(Ls2) --> varname1(L1),",", %%{writeln(L)}, %%***
+varnames0(Ls2) --> %{trace},
+varname1(L1),",", %%{writeln(L)}, %%***
 	varnames0(Ls), 
 	{append([L1],Ls,Ls2)},!. 
 
 varnames0(Ls2) --> varname1(L1),"|", %%{writeln(L)}, %%***
 	varnames0([Ls]), 
-	{append_list([[L1],"|",Ls],Ls2)},!. 
+	{append_list([L1,"|",Ls],Ls2)},!. 
 
 lookahead1(A,A) :- append(`]`,_,A).
 lookahead1(A,A) :- append(`)`,_,A).
 %lookahead1(A,A) :- append(`,`,_,A).
+%lookahead1(A,A) :- append(`|`,_,A).
 
 lookahead2(B1,A,A):-
 %trace,
@@ -273,7 +304,7 @@ lookahead2(B1,A,A):-
 
 varname1([]) --> "[","]". %%{writeln(L)}, %%***
 varname1(L4) --> name11(L1), %%{writeln(L)}, %%***
-{%%atom_string(L1,L10),string_codes(L2,L10),
+{%trace,%%atom_string(L1,L10),string_codes(L2,L10),
 ((atom_concat(A,_,L1),atom_length(A,1),not(is_upper(A))->L4=L1;(downcase_atom(%%L2
 L1,L3),L4=[v,L3])))%%L3A
 
@@ -350,6 +381,84 @@ line(A) --> %%spaces1(_),
 		{v_if_string_or_atom(Word10,Word10a),
 		v_if_string_or_atom(Word11,Word11a),
 		A=[[n,Word21],[Word10a,Word11a]]},!.
+line(A) --> %%spaces1(_), 
+		name1(Word10),{%trace,
+		not(Word10=findall)},
+		spaces1(_), %% A is B
+		name1(Word21), spaces1(_), name1(Word11),
+		{v_if_string_or_atom(Word10,Word10a),
+		v_if_string_or_atom(Word11,Word11a),
+		A=[[n,Word21],[Word10a,Word11a]]},!.
+/*line(A) --> %%spaces1(_), 
+		name1(Word10),{%trace,
+		not(Word10=findall)},
+		%spaces1(_), 
+		%% A = [B,C]
+		"is",
+		%name2(Word21),
+		 %spaces1(_), 
+		name1(Word11),
+		{v_if_string_or_atom(Word10,Word10a),
+		v_if_string_or_atom(Word11,Word11a),
+		A=[[n,=],[Word10a,Word11a]]},!.
+		*/
+line(A) --> %%spaces1(_), 
+		name1(Word10),{%trace,
+		not(Word10=findall)},
+		%spaces1(_), 
+		%% A = [B,C]
+		"=",
+		%name2(Word21),
+		 %spaces1(_), 
+		"[",
+		"]",
+		{v_if_string_or_atom(Word10,Word10a),
+		%v_if_string_or_atom(Word11,Word11a),
+		%v_if_string_or_atom(Word12,Word12a),
+		A=[[n,equals4],[Word10a,[]]]},!.
+line(A) --> %%spaces1(_), 
+   %{trace},
+		name1(Word10),{%trace,
+		not(Word10=findall)},
+		%spaces1(_), 
+		%% A = [B,C]
+		"=",
+		%name2(Word21),
+		 %spaces1(_), 
+		"[",
+		varnames(Word11),"]",
+		{v_if_string_or_atom(Word10,Word10a),
+		%v_if_string_or_atom(Word11,Word11a),
+		%v_if_string_or_atom(Word12,Word12a),
+		A=[[n,equals4],[Word10a,[Word11]]]},!.
+		
+line(A) --> %%spaces1(_), 
+		name1(Word10),{%trace,
+		not(Word10=findall)},
+		%spaces1(_), 
+		%% A = [B,C]
+		"=",
+		%name2(Word21),
+		 %spaces1(_), 
+		"[",name1(Word11),
+		"|",name1(Word12),
+		"]",
+		{v_if_string_or_atom(Word10,Word10a),
+		v_if_string_or_atom(Word11,Word11a),
+		v_if_string_or_atom(Word12,Word12a),
+		A=[[n,equals4],[Word10a,[Word11a,"|",Word12a]]]},!.
+line(A) --> %%spaces1(_), 
+		name1(Word10),{%trace,
+		not(Word10=findall)},
+		%spaces1(_), 
+		%% A = [B,C]
+		"=",
+		%name2(Word21),
+		 %spaces1(_), 
+		varnames(Word11),
+		{v_if_string_or_atom(Word10,Word10a),
+		%v_if_string_or_atom(Word11,Word11a),
+		A=[[n,=],[Word10a,Word11]]},!.
 
 line(A) --> %%spaces1(_), 
 		name1(Word11), %% name(A,B,C)
