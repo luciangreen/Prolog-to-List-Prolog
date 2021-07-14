@@ -40,7 +40,7 @@ pp1(List1,S1,S2) :-
 	(List2=[[N1,Name],Variables1,Symbol,Body]->
 	(term_to_atom(Variables1,Variables2),
 	concat_list([S1,'[[',N1,',',Name,'],',Variables2,
-	',',Symbol1,'\n['],String),
+	',',Symbol1,',\n['],String),
 	pp2(Body,'',B1),
 	%trace,
 	%string_concat(B1,",",B11),
