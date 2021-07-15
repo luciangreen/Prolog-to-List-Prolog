@@ -244,6 +244,7 @@ varnames01(L1) --> varname1(L2),
 varnames(L3) --> %{trace},
 "[",varnames0(L1),"]",",",varnames(L2),
 	{append([L1],L2,L3)},!. 
+% 	{maplist(append,[[[[L1],L2]]],[[L3]])},!. 
 
 
 varnames(L3) --> %{trace},
@@ -286,10 +287,12 @@ varnames0(Ls2) --> %{trace},
 varname1(L1),",", %%{writeln(L)}, %%***
 	varnames0(Ls), 
 	{append([L1],Ls,Ls2)},!. 
+%	{maplist(append,[[[L1,Ls]]],[[Ls2]])},!. 
 
 varnames0(Ls2) --> varname1(L1),"|", %%{writeln(L)}, %%***
 	varnames0([Ls]), 
 	{append_list([L1,"|",Ls],Ls2)},!. 
+%	{maplist(append,[[[L1,"|",Ls]]],[Ls2])},!. 
 
 lookahead1(A,A) :- append(`]`,_,A).
 lookahead1(A,A) :- append(`)`,_,A).
