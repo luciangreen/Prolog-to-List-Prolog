@@ -440,7 +440,7 @@ line(A) --> %%spaces1(_),
 		{v_if_string_or_atom(Word10,Word10a),
 		%v_if_string_or_atom(Word11,Word11a),
 		%v_if_string_or_atom(Word12,Word12a),
-		A=[[n,equals4],[Word10a,[Word11]]]},!.
+		A=[[n,equals4],[Word10a,Word11]]},!.
 		
 line(A) --> %%spaces1(_), 
 		name1(Word10),{%trace,
