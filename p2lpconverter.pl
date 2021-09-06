@@ -15,10 +15,19 @@ use_module(library(dcg/basics)).
 
 :- include('la_strings.pl').
 
-p2lpconverter(List3) :-
-	File1="test1.pl",
+p2lpconverter([string,String],List3) :-
+	%File1="test1.pl",
+	string_codes(String,String1),
+	(phrase(file(List3),String1)->true;(writeln(Error),abort)).
+
+p2lpconverter([file,File1],List3) :-
+	%File1="test1.pl",
 	readfile(File1,"test1.pl file read error.",List3).
-	
+
+p2lpconverter(List3) :-
+	File1="test1.pl",	
+	readfile(File1,"test1.pl file read error.",List3).
+
 readfile(List1,Error,List3) :-
 	phrase_from_file_s(string(List6), List1),
 	(phrase(file(List3),List6)->true;(writeln(Error),abort)).
@@ -30,10 +39,10 @@ list([]) --> [].
 list([L|Ls]) --> [L], list(Ls).
 
 file([L|Ls]) --> predicate(L),newlines1(_),
-{writeln1(L)}, %%***
+%{writeln1(L)}, %%***
 file(Ls), !. 
 file([L]) --> predicate(L),newlines1(_),
-{writeln1(L)},
+%{writeln1(L)},
 !.
 
 %%predicate([]) --> newlines1(_).
