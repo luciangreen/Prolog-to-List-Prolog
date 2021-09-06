@@ -18,7 +18,8 @@ use_module(library(dcg/basics)).
 p2lpconverter([string,String],List3) :-
 	%File1="test1.pl",
 	string_codes(String,String1),
-	(phrase(file(List3),String1)->true;(writeln(Error),fail)).
+	(phrase(file(List3),String1)->true;%(writeln(Error),
+	fail).
 
 p2lpconverter([file,File1],List3) :-
 	%File1="test1.pl",
@@ -30,7 +31,8 @@ p2lpconverter(List3) :-
 
 readfile(List1,Error,List3) :-
 	phrase_from_file_s(string(List6), List1),
-	(phrase(file(List3),List6)->true;(writeln(Error),fail)).
+	(phrase(file(List3),List6)->true;%(writeln(Error),
+	fail).
 	%writeln1(List3)	.
 
 string(String) --> list(String).
