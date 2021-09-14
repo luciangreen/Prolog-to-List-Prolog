@@ -381,6 +381,12 @@ lines([L]) --> line(L),
 %%{writeln(L)},
 !.
 
+line(A) -->
+		varnames([Varnames1]),"=",
+		varnames([Varnames2]),
+		{A=[[n,equals4],[Varnames1,Varnames2]]
+		}.
+
 line(A) --> %%spaces1(_), 
 		name1(Word11), %% name(A,B,C)
 		{%trace,
