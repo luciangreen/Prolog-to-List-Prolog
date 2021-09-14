@@ -380,10 +380,13 @@ lines(Ls), !.
 lines([L]) --> line(L), 
 %%{writeln(L)},
 !.
+varname_or_names(Varnames1) --> varnames([Varnames1]).
+varname_or_names(Varname) --> varname1(Varname).
 
-line(A) -->
-		varnames([Varnames1]),"=",
-		varnames([Varnames2]),
+%varname1
+line(A) -->%{trace},
+		varname_or_names(Varnames1),"=",
+		varname_or_names(Varnames2),
 		{A=[[n,equals4],[Varnames1,Varnames2]]
 		}.
 
