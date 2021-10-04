@@ -383,6 +383,8 @@ lines([L]) --> line(L),
 varname_or_names(Varnames1) --> varnames([Varnames1]).
 varname_or_names(Varname) --> varname1(Varname).
 
+% 	maplist(append,[[[40],B1,[41]]],[B12]), % "()"
+
 %varname1
 line(A) -->%{trace},
 		varname_or_names(Varnames1),"=",
