@@ -26,6 +26,26 @@ pp2([],S,S,_N):-!.
 pp2(List1,S1,S2,N) :-
 	List1=[List2],
 	
+	(List2=[[n,findall],[V1,Body,V2]]-> % if then else
+	(N2 is N+1,
+	pp2([Body],'',S4,N2),
+	length(Counter,N),
+	findall('\t',member(_,Counter),Ts1),
+	concat_list(Ts1,Ts),
+	length(Counter2,N2),
+	findall('\t',member(_,Counter2),Ts21),
+	concat_list(Ts21,Ts2),
+	%pp2(Lists3,'',S3,N),
+	term_to_atom(V1,V11),
+	term_to_atom(V2,V21),
+	concat_list([S1,'\n',Ts,'[[n,findall]','\n',Ts,'[',
+	'\n',Ts2,V11,',',
+	 S4,',',%'\n',Ts,
+	'\n',Ts2,V21,
+	 '\n',%Ts,'],[',
+	 %S5,
+	 Ts,']]'],S2));
+
 	(List2=[[n,"->"],[If,Then]]-> % if then else
 	(N2 is N+1,
 	pp2([If],'',S4,N2),
@@ -38,6 +58,7 @@ pp2(List1,S1,S2,N) :-
 	 S4,',',%'\n',Ts,
 	 '\n',%Ts,'],[',
 	 S5,'\n',Ts,']]'],S2));
+
 	%* remove \n Ts
 	%* put in n,"->"
 	(List2=[[n,"->"],[If,Then,Else]]-> % if then else
@@ -75,11 +96,33 @@ pp2(List1,S1,S2,N) :-
 	'\n',Ts,'[',
 	List2a,
 	'\n',Ts,']'
-	],S2)))),
+	],S2))))),
 	!.
 pp2(List1,S1,S2,N) :-
 	List1=[List2|Lists3],
 	%write("\t"),write(List2),writeln(","),
+
+	(List2=[[n,findall],[V1,Body,V2]]-> % if then else
+	(N2 is N+1,
+	pp2([Body],'',S4,N2),
+	length(Counter,N),
+	findall('\t',member(_,Counter),Ts1),
+	concat_list(Ts1,Ts),
+	length(Counter2,N2),
+	findall('\t',member(_,Counter2),Ts21),
+	concat_list(Ts21,Ts2),
+	%pp2(Lists3,'',S3,N),
+	term_to_atom(V1,V11),
+	term_to_atom(V2,V21),
+	pp2(Lists3,'',S3,N),
+	concat_list([S1,'\n',Ts,'[[n,findall]','\n',Ts,'[',
+	'\n',Ts2,V11,',',
+	 S4,',',%'\n',Ts,
+	'\n',Ts2,V21,
+	 '\n',%Ts,'],[',
+	 %S5,
+	 Ts,']]',',',S3],S2));
+
 	(List2=[[n,"->"],[If,Then]]-> % if then else
 	(N2 is N+1,
 	pp2([If],'',S4,N2),
@@ -130,7 +173,7 @@ pp2(List1,S1,S2,N) :-
 	List2a,
 	'\n',Ts,']',
 	',',S3
-	],S2)))),
+	],S2))))),
 	%concat_list([S1,%'\n',Ts,
 	%List2a,',',S3],S2)))),
 
