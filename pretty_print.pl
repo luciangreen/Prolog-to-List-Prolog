@@ -1,3 +1,9 @@
+% ["Medicine","MEDICINE by Lucian Green Head of State Head Ache Prevention 4 of 4.txt",0,algorithms,"32. I prepared to observe the people like my lecturer friend and meditation student was a doctor and friend.  I did this by observing the hansard.  First, I found the hansard.  Second, I observed him listen to the politician.  Third, I observed him take notes.  In this way, I prepared to observe the people like my lecturer friend and meditation student was a doctor and friend by observing the hansard."]
+
+% * I did this by observing the hansard. 
+
+% For nested if-then, findall
+
 pretty_print(List,String) :-
 	(pp0(List,String)->true;
 	pp_1(List,String)).
