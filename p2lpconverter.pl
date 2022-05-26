@@ -538,7 +538,8 @@ line(Word1) -->
 		"(",line(Word2),")",{Word1=[Word2]},!.
 line(Word1) -->
 		"(",line(Word2),"->",line(Word3),";",line(Word4),")",
-		{Word1=[[n,"->"],[Word2,Word3,Word4]]},!.
+		{(Word4=[[[[n,_]|_]|_]|_]->Word4=[Word41];Word4=Word41),
+		Word1=[[n,"->"],[Word2,Word3,Word41]]},!.
 line(Word1) -->
 		"(",line(Word2),"->",line(Word3),")",
 		{Word1=[[n,"->"],[Word2,Word3]]},!.
