@@ -35,6 +35,13 @@ Convert Prolog code to List Prolog code by copying Prolog algorithm into `test1.
 
 e.g.
 ```
+a:-a.
+a->a.
+a(A):-[]=[[]].
+a(A):-([]=[[]]).
+a(A):-([1]=A).
+a(A):-(B=A).
+a(A):-([1]=[1]).
 a([A,B,C]).
 a([A,B]).
 a([A|C]).
@@ -58,15 +65,51 @@ a(A).
 compound21(T,U)->item(I),lookahead("]"),{wrap(I,Itemname1),append(T,Itemname1,V)},compound212(V,U).
 
 [
+[[n,a],":-",
+[
+	[[n,a]]
+]],
+[[n,a],"->",
+[
+	[[n,a]]
+]],
+[[n,a],[[v,a]],":-",
+[
+	[[n,equals4],[[],[[]]]]
+]],
+[[n,a],[[v,a]],":-",
+[
+	[
+	[[n,equals4],[[],[[]]]]
+	]
+]],
+[[n,a],[[v,a]],":-",
+[
+	[
+	[[n,equals4],[[1],[v,a]]]
+	]
+]],
+[[n,a],[[v,a]],":-",
+[
+	[
+	[[n,=],[[v,b],[v,a]]]
+	]
+]],
+[[n,a],[[v,a]],":-",
+[
+	[
+	[[n,equals4],[[1],[1]]]
+	]
+]],
 [[n,a],[[[v,a],[v,b],[v,c]]]],
 [[n,a],[[[v,a],[v,b]]]],
-[[n,a],[[[[v,a]],"|",[v,c]]]],
+[[n,a],[[[v,a],"|",[v,c]]]],
 [[n,a],[[[[v,a],[v,b]]]]],
 [[n,a],[[v,a],[]]],
 [[n,a],[[v,a],[[v,a]]]],
-[[n,a],[[[[[v,a]]],"|",[v,c]]]],
-[[n,a],[[v,a],[[[[v,a]]],"|",[v,c]]]],
-[[n,a],[[v,a],[[[[v,a],[v,b]]],"|",[[v,c],[v,d]]]]],
+[[n,a],[[[[v,a]],"|",[v,c]]]],
+[[n,a],[[v,a],[[[v,a]],"|",[v,c]]]],
+[[n,a],[[v,a],[[[v,a],[v,b]],"|",[[v,c],[v,d]]]]],
 [[n,ba],[12]],
 [[n,ba],[12,1]],
 [[n,a],[1.1]],
@@ -74,11 +117,28 @@ compound21(T,U)->item(I),lookahead("]"),{wrap(I,Itemname1),append(T,Itemname1,V)
 [[n,a],[dd]],
 [[n,a],[[v,a]],":-",
 [
-	[[n,findall],[[v,a],[[n,hello],[[v,a]]],[v,b]]]
+	[[n,findall]
+	[
+		[v,a],
+
+		[[n,hello],[[v,a]]],
+
+		[v,b]
+	]]
 ]],
 [[n,a],[[v,a]],":-",
 [
-	[[n,findall],[[v,a],[[[n,hello],[[v,a]]],[[n,hello],[[v,a]]]],[v,b]]]
+	[[n,findall]
+	[
+		[v,a],
+
+		[
+		[[n,hello],[[v,a]]],
+		[[n,hello],[[v,a]]]
+		],
+
+		[v,b]
+	]]
 ]],
 [[n,a],[[[v,a]]],":-",
 [
@@ -86,7 +146,14 @@ compound21(T,U)->item(I),lookahead("]"),{wrap(I,Itemname1),append(T,Itemname1,V)
 ]],
 [[n,ef],[[v,g]],":-",
 [
-	[[n,"->"],[[[n,h],[[v,i]]],[[n,true]],[[n,true]]]],
+	[[n,"->"]
+	[
+		[[n,h],[[v,i]]],
+
+		[[n,true]],
+
+		[[n,true]]
+	]],
 	[[n,cut]]
 ]],
 [[n,a],[[[v,a]]]],
