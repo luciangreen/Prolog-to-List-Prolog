@@ -117,7 +117,7 @@ compound21(T,U)->item(I),lookahead("]"),{wrap(I,Itemname1),append(T,Itemname1,V)
 [[n,a],[dd]],
 [[n,a],[[v,a]],":-",
 [
-	[[n,findall]
+	[[n,findall],
 	[
 		[v,a],
 
@@ -128,7 +128,7 @@ compound21(T,U)->item(I),lookahead("]"),{wrap(I,Itemname1),append(T,Itemname1,V)
 ]],
 [[n,a],[[v,a]],":-",
 [
-	[[n,findall]
+	[[n,findall],
 	[
 		[v,a],
 
@@ -146,7 +146,7 @@ compound21(T,U)->item(I),lookahead("]"),{wrap(I,Itemname1),append(T,Itemname1,V)
 ]],
 [[n,ef],[[v,g]],":-",
 [
-	[[n,"->"]
+	[[n,"->"],
 	[
 		[[n,h],[[v,i]]],
 
