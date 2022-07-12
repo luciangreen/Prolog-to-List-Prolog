@@ -336,7 +336,7 @@ lookahead(B2,A,A):-
 %trace,
 	%member(B,B1),
 	%string_codes(B,B2),
-	append(B2,_D,A).
+	append(B2,_D,A),!.
 
 lookahead2(B1,A,A):-
 %trace,
@@ -361,9 +361,9 @@ varname1(L1) -->
 comment(X1) --> spaces1(_),[X], {char_code('%',X)},comment1(Xs), {append([X],Xs,X2),string_codes(X3,X2),X1=[[n,comment],[X3]]},!.
 
 %comment1([]) --> [], !.
-comment1([X|Xs]) --> [X], {not(char_type(X,newline))}, comment1(Xs), !.
+comment1([X|Xs]) --> [X], lookahead(A),{not(char_type(X,newline)),not(A=[])}, comment1(Xs), !.
 %%newlines1([X]) --> [X], {char_type(X,newline)},!.
-comment1([X]) --> [X], {char_type(X,newline)}, !.
+comment1([X]) --> [X], lookahead(A), {(char_type(X,newline)->true;A=[])}, !.
 
 
 comment2(X1) --> spaces1(_),[XA],[XB], {char_code('/',XA),char_code('*',XB)},comment3(Xs), {flatten([XA,XB,Xs],X4),%foldr(append,X4,X2),
