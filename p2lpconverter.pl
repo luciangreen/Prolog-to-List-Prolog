@@ -40,10 +40,11 @@ string(String) --> list(String).
 list([]) --> [].
 list([L|Ls]) --> [L], list(Ls).
 
-file([L|Ls]) --> predicate(L),newlines1(_),
+file(Ls2) --> predicate(L),newlines1(N),
 %{writeln1(L)}, %%***
-file(Ls), !. 
-file([L]) --> predicate(L),newlines1(_),
+file(Ls), {delete([L,N|Ls],[],Ls2)},!. 
+file(N) --> newlines1(N),
+%{foldr(append,[N],Ls2)},
 %{writeln1(L)},
 !.
 
@@ -57,31 +58,40 @@ predicate(A) -->
 		"(",varnames(Varnames),")",
 		".", {A=[[n,Word11],Varnames]
 		}.
-predicate(A) -->
+predicate(A2) -->
 		name1(Word11),
 		"(",varnames(Varnames),")",
-		spaces1(_),":-",newlines1(_),%{trace},
+		spaces1(_),":-",newlines1(N),%{trace},
 		lines(L), ".",
-		{A=[[n,Word11],Varnames,":-",L]
+		{A=[[n,Word11],Varnames,":-",N,L],
+		delete(A,[],A2)
 		}.
-predicate(A) -->
+predicate(A2) -->
 		name1(Word11),
 		"(",varnames(Varnames),")",
-		spaces1(_),"->",newlines1(_),
+		spaces1(_),"->",newlines1(N),
 		lines(L), ".",
-		{A=[[n,Word11],Varnames,"->",L]
+		{A=[[n,Word11],Varnames,"->",N,L],
+				delete(A,[],A2)
+
 		}.
-predicate(A) -->
+predicate(A2) -->
 		name1(Word11),
-		spaces1(_),":-",newlines1(_),%{trace},
+		spaces1(_),":-",newlines1(N),%{trace},
 		lines(L), ".",
-		{A=[[n,Word11],":-",L]
+		{A=[[n,Word11],":-",N,L],
+		
+						delete(A,[],A2)
+
 		}.
-predicate(A) -->
+predicate(A2) -->
 		name1(Word11),
-		spaces1(_),"->",newlines1(_),
+		spaces1(_),"->",newlines1(N),
 		lines(L), ".",
-		{A=[[n,Word11],"->",L]
+		{A=[[n,Word11],"->",N,L],
+		
+								delete(A,[],A2)
+
 		}.
 		
 /**name1([L3|Xs]) --> [X], {string_codes(L2,[X]),(char_type(X,alnum)->true;L2="_"),downcase_atom(L2,L3)}, name1(Xs), !.
@@ -322,6 +332,12 @@ lookahead1(A,A) :- append(`)`,_,A).
 %lookahead1(A,A) :- append(`,`,_,A).
 %lookahead1(A,A) :- append(`|`,_,A).
 
+lookahead(B2,A,A):-
+%trace,
+	%member(B,B1),
+	%string_codes(B,B2),
+	append(B2,_D,A).
+
 lookahead2(B1,A,A):-
 %trace,
 	member(B,B1),
@@ -341,8 +357,29 @@ varname1(L1) -->
 "[",varnames0(L2),"]", 
 {L1 = L2},!.
 
+%comment([]) --> [].
+comment(X1) --> spaces1(_),[X], {char_code('%',X)},comment1(Xs), {append([X],Xs,X2),string_codes(X3,X2),X1=[[n,comment],[X3]]},!.
 
-newlines1([X|Xs]) --> [X], {char_type(X,newline)}, newlines1(Xs), !.
+%comment1([]) --> [], !.
+comment1([X|Xs]) --> [X], {not(char_type(X,newline))}, comment1(Xs), !.
+%%newlines1([X]) --> [X], {char_type(X,newline)},!.
+comment1([X]) --> [X], {char_type(X,newline)}, !.
+
+
+comment2(X1) --> spaces1(_),[XA],[XB], {char_code('/',XA),char_code('*',XB)},comment3(Xs), {flatten([XA,XB,Xs],X4),%foldr(append,X4,X2),
+string_codes(X3,X4),X1=[[n,comment],[X3]]},!.
+
+%comment1([]) --> [], !.
+comment3([XA|Xs]) --> [XA],%[XB],
+ lookahead([XB]),{not((char_code('*',XA),char_code('/',XB)))}, comment3(Xs), !.
+%%newlines1([X]) --> [X], {char_type(X,newline)},!.
+comment3([XA,XB]) --> [XA],[XB], {char_code('*',XA),char_code('/',XB)}, !.
+
+
+newlines1(Xs) --> [X], {char_type(X,newline)}, newlines1(Xs), %{append(X,Xs,Xs2)}
+!.
+newlines1([X|Xs]) --> comment(X), newlines1(Xs), !.
+newlines1([X|Xs]) --> comment2(X), newlines1(Xs), !.
 %%newlines1([X]) --> [X], {char_type(X,newline)},!.
 newlines1([]) --> [],!.
 
@@ -374,9 +411,10 @@ comments3(_) --> spaces1(_),name1(_).%%[X], [Y], {string_codes(X1,[X]),
 
 **/
 
-lines([L|Ls]) --> line(L),",",newlines1(_),
+
+lines(Ls2) --> line(L),",",newlines1(N),
 %%{writeln(L)}, %%***
-lines(Ls), !. 
+lines(Ls), {delete([L,N,Ls],[],Ls2)}, !. 
 lines([L]) --> line(L), 
 %%{writeln(L)},
 !.
