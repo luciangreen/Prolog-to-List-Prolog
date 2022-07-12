@@ -40,14 +40,25 @@ string(String) --> list(String).
 list([]) --> [].
 list([L|Ls]) --> [L], list(Ls).
 
-file(Ls2) --> predicate(L),newlines1(N),
+%file(N) --> newlines1(N),!.
+
+file(Ls2) --> newlines1(N1),predicate(L),newlines1(N2),file(Ls),
 %{writeln1(L)}, %%***
-file(Ls), {delete([L,N|Ls],[],Ls2)},!. 
-file(N) --> newlines1(N),
+ {foldr(append,[N1,[L],N2,Ls],Ls2)},
+ %delete(Ls3,[],Ls2)},
+ !. 
+
+file([]) --> [],!.
+
+/*
+file(Ls2) --> newlines1(N),file(Ls),
+%{writeln1(L)}, %%***
+ {%foldr(append,[[L],N|Ls],Ls3),
+ delete([N|Ls],[],Ls2)},
 %{foldr(append,[N],Ls2)},
 %{writeln1(L)},
 !.
-
+*/
 %%predicate([]) --> newlines1(_).
 predicate(A) -->
 		name1(Word11), 
@@ -361,12 +372,13 @@ varname1(L1) -->
 comment(X1) --> spaces1(_),[X], {char_code('%',X)},comment1(Xs), {append([X],Xs,X2),string_codes(X3,X2),X1=[[n,comment],[X3]]},!.
 
 %comment1([]) --> [], !.
-comment1([X|Xs]) --> [X], lookahead(A),{not(char_type(X,newline)),not(A=[])}, comment1(Xs), !.
+comment1([X|Xs]) --> [X], lookahead(_A),{not(char_type(X,newline))%,not(A=[])
+}, comment1(Xs), !.
 %%newlines1([X]) --> [X], {char_type(X,newline)},!.
-comment1([X]) --> [X], lookahead(A), {(char_type(X,newline)->true;A=[])}, !.
+comment1([]) --> [X], lookahead(A), {(char_type(X,newline)->true;A=[])}, !.
 
 
-comment2(X1) --> spaces1(_),[XA],[XB], {char_code('/',XA),char_code('*',XB)},comment3(Xs), {flatten([XA,XB,Xs],X4),%foldr(append,X4,X2),
+comment2(X1) --> spaces1(_),[XA],[XB], {char_code('/',XA),char_code('*',XB)},comment3(Xs), {flatten([XA,XB|Xs],X4),%foldr(append,X4,X2),
 string_codes(X3,X4),X1=[[n,comment],[X3]]},!.
 
 %comment1([]) --> [], !.
@@ -378,10 +390,13 @@ comment3([XA,XB]) --> [XA],[XB], {char_code('*',XA),char_code('/',XB)}, !.
 
 newlines1(Xs) --> [X], {char_type(X,newline)}, newlines1(Xs), %{append(X,Xs,Xs2)}
 !.
-newlines1([X|Xs]) --> comment(X), newlines1(Xs), !.
-newlines1([X|Xs]) --> comment2(X), newlines1(Xs), !.
+newlines1([X|Xs]) --> comment(X), newlines1(Xs), %{append([X],Xs,Xs2)},
+!.
+newlines1([X|Xs]) --> comment2(X), newlines1(Xs), %{append([X],Xs,Xs2)},
+!.
 %%newlines1([X]) --> [X], {char_type(X,newline)},!.
-newlines1([]) --> [],!.
+newlines1([]) --> [],%lookahead([]),
+!.
 
 /**
 was comments
