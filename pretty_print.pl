@@ -11,6 +11,7 @@ pretty_print(List,String) :-
 symbol_1(":-","\":-\"").
 symbol_1("->","\"->\"").
 
+pp0([],'[]') :- !.
 pp0(List,String2) :-
 %trace,
 	pp1(List,'',String1),

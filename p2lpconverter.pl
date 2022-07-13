@@ -42,12 +42,14 @@ list([L|Ls]) --> [L], list(Ls).
 
 %file(N) --> newlines1(N),!.
 
-file(Ls2) --> newlines1(N1),predicate(L),newlines1(N2),file(Ls),
+file(Ls2) --> newlines1(N1),predicate(L),%newlines1(N2),
+file(Ls),
 %{writeln1(L)}, %%***
- {foldr(append,[N1,[L],N2,Ls],Ls2)},
+ {foldr(append,[N1,[L],%N2,
+ Ls],Ls2)},
  %delete(Ls3,[],Ls2)},
  !. 
-
+file(Ls2) --> newlines1(Ls2),!.
 file([]) --> [],!.
 
 /*
@@ -74,34 +76,34 @@ predicate(A2) -->
 		"(",varnames(Varnames),")",
 		spaces1(_),":-",newlines1(N),%{trace},
 		lines(L), ".",
-		{A=[[n,Word11],Varnames,":-",N,L],
-		delete(A,[],A2)
+		{foldr(append,[[[n,Word11],Varnames,":-"],N,[L]],A2)
+		%delete(A,[],A2)
 		}.
 predicate(A2) -->
 		name1(Word11),
 		"(",varnames(Varnames),")",
 		spaces1(_),"->",newlines1(N),
 		lines(L), ".",
-		{A=[[n,Word11],Varnames,"->",N,L],
-				delete(A,[],A2)
+		{foldr(append,[[[n,Word11],Varnames,"->"],N,[L]],A2)
+				%delete(A,[],A2)
 
 		}.
 predicate(A2) -->
 		name1(Word11),
 		spaces1(_),":-",newlines1(N),%{trace},
 		lines(L), ".",
-		{A=[[n,Word11],":-",N,L],
+		{foldr(append,[[[n,Word11],":-"],N,[L]],A2)
 		
-						delete(A,[],A2)
+						%delete(A,[],A2)
 
 		}.
 predicate(A2) -->
 		name1(Word11),
 		spaces1(_),"->",newlines1(N),
 		lines(L), ".",
-		{A=[[n,Word11],"->",N,L],
+		{foldr(append,[[[n,Word11],"->"],N,[L]],A2)
 		
-								delete(A,[],A2)
+								%delete(A,[],A2)
 
 		}.
 		
@@ -388,7 +390,7 @@ comment3([XA|Xs]) --> [XA],%[XB],
 comment3([XA,XB]) --> [XA],[XB], {char_code('*',XA),char_code('/',XB)}, !.
 
 
-newlines1(Xs) --> [X], {char_type(X,newline)}, newlines1(Xs), %{append(X,Xs,Xs2)}
+newlines1(Xs) --> [X], {char_type(X,newline)}, newlines1(Xs), %{append([X],Xs,Xs2)},
 !.
 newlines1([X|Xs]) --> comment(X), newlines1(Xs), %{append([X],Xs,Xs2)},
 !.
@@ -427,9 +429,14 @@ comments3(_) --> spaces1(_),name1(_).%%[X], [Y], {string_codes(X1,[X]),
 **/
 
 
-lines(Ls2) --> line(L),",",newlines1(N),
+lines(Ls2) --> spaces1(_),line(L),",",newlines1(N),
+lines(Ls), %trace,
+%{delete([L,N|Ls],[],Ls2)}, !. 
+%lines(Ls2) --> line(L),",",newlines1(N),
 %%{writeln(L)}, %%***
-lines(Ls), {delete([L,N|Ls],[],Ls2)}, !. 
+%lines(Ls), 
+{foldr(append,[[L],N,Ls],Ls2%[],Ls2
+)}, !. 
 lines([L]) --> line(L), 
 %%{writeln(L)},
 !.
