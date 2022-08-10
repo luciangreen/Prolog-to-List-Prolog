@@ -63,6 +63,7 @@ ef(G):-(h(I)->true;true),!.
 a([A]).
 a(A).
 compound21(T,U)->item(I),lookahead("]"),{wrap(I,Itemname1),append(T,Itemname1,V)},compound212(V,U).
+a(A):-findall([A,C],hello(A,C),B).
 
 [
 [[n,a],":-",
@@ -164,6 +165,17 @@ compound21(T,U)->item(I),lookahead("]"),{wrap(I,Itemname1),append(T,Itemname1,V)
 	[[n,lookahead],["]"]],
 	[[n,code],[[[n,wrap],[[v,i],[v,itemname1]]],[[n,append],[[v,t],[v,itemname1],[v,v]]]]],
 	[[n,compound212],[[v,v],[v,u]]]
+]],
+[[n,a],[[v,a]],":-",
+[
+	[[n,findall],
+	[
+		[[v,a],[v,c]],
+
+		[[n,hello],[[v,a],[v,c]]],
+
+		[v,b]
+	]]
 ]]
 ]
 ```

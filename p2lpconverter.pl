@@ -286,7 +286,7 @@ varnames([L1]) --> varname1(L1),
 
 varnames01(L1) --> %{trace},
 "[",varnames0(L2),"]", 
-{L1 = [L2]},
+{L1 = L2},
 !. 
 
 varnames01(L1) --> varname1(L2),
