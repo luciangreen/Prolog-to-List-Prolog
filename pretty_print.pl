@@ -163,13 +163,15 @@ pp2(List1,S1,S2,N) :-
 	 S51,'\n',Ts,']]',',',S3],S2));
 	%concat_list([S1,'\n',Ts,S4,',','\n',Ts,S5,',','\n',Ts,S51,',',S3],S2));
 	(%pp2(List2,'',List2a,N),
-	List2=[[n,_]|_],
+	%trace,
+	List2=[[N_or_v,_]|_],(N_or_v=n->true;N_or_v=v),
 	pp2(Lists3,'',S3,N),
 	term_to_atom(List2,List2a),
 	length(Counter,N),
 	findall('\t',member(_,Counter),Ts1),
 	concat_list(Ts1,Ts),
-	concat_list([S1,'\n',Ts,List2a,',',S3],S2));
+	(S3=''->Comma='';Comma=','),
+	concat_list([S1,'\n',Ts,List2a,Comma,S3],S2));
 	
 	(pp2(List2,'',List2a,N),
 	pp2(Lists3,'',S3,N),
