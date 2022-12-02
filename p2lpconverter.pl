@@ -346,10 +346,22 @@ varnames0(Ls2) --> varname1(L1),"|", %%{writeln(L)}, %%***
 	{append_list([L1,"|",Ls],Ls2)},!. 
 %	{maplist(append,[[[L1,"|",Ls]]],[Ls2])},!. 
 
+varnames3(L1) --> varname1(L2),%{trace},
+%lookahead1,%{notrace},
+	{L1=L2},!.
+
+varnames3(L1) --> varnames(L1),%{trace},
+%lookahead1,%{notrace},
+	%{L1=[L2]},
+	!.
+
 lookahead1(A,A) :- append(`]`,_,A).
 lookahead1(A,A) :- append(`)`,_,A).
 %lookahead1(A,A) :- append(`,`,_,A).
 %lookahead1(A,A) :- append(`|`,_,A).
+
+%lookahead3(A,A) :- lookahead1(A,A)
+%lookahead3(A,A) :- append(`,`,_,A).
 
 lookahead(B2,A,A):-
 %trace,
@@ -613,11 +625,12 @@ line(A) --> %%spaces1(_),
 		"=",
 		%name2(Word21),
 		 %spaces1(_), 
-		varnames(Word11),
+		varnames3(Word11),
 		{v_if_string_or_atom(Word10,Word10a),
 		%v_if_string_or_atom(Word11,Word11a),
 		A=[[n,=],[Word10a,Word11]]},!.
-line(A) --> %%spaces1(_), 
+line(A) --> %%spaces1(_),
+		%{trace}, 
 		name1(Word10),{%trace,
 		not(Word10=findall)},
 		%spaces1(_), 
@@ -766,8 +779,13 @@ string_concat(A2,"%",A),		split_string(A,Find,Find,B),findall([C,Replace],(membe
 	string_concat(F,"%",F3).
 
 v_if_string_or_atom(String_or_atom,V) :-
-	((string(String_or_atom)->true;
-	atom(String_or_atom))->
+	(((string(String_or_atom)->true;
+	atom(String_or_atom)),
+	%trace,
+	string_concat(A,_,String_or_atom),
+	string_length(A,1),
+	is_lower(A)
+	)->
 	V=[v,String_or_atom];
 	V=String_or_atom),!.
 	
