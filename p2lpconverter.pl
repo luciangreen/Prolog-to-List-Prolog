@@ -783,8 +783,8 @@ v_if_string_or_atom(String_or_atom,V) :-
 	atom(String_or_atom)),
 	%trace,
 	string_concat(A,_,String_or_atom),
-	string_length(A,1),
-	is_lower(A)
+	string_length(A,1)
+	%,is_upper(A)
 	)->
 	V=[v,String_or_atom];
 	V=String_or_atom),!.
