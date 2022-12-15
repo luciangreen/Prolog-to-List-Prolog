@@ -313,6 +313,9 @@ varnames(L1) --> %{trace},
 
 
 varnames(L1) --> %{trace},
+"[","]",",","[","]",newlines1(_),spaces1(_),%varnames(L2),
+	{append([[],[]],L2,L1)},!. 
+varnames(L1) --> %{trace},
 "[",newlines1(_),spaces1(_),"]",",",newlines1(_),spaces1(_),varnames(L2),
 	{append([[]],L2,L1)},!. 
 
