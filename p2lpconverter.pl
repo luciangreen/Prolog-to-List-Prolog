@@ -311,10 +311,22 @@ varnames(L1) --> %{trace},
 !. 
 
 
-
+/*
 varnames(L1) --> %{trace},
-"[","]",",","[","]",newlines1(_),spaces1(_),%varnames(L2),
-	{append([[],[]],L2,L1)},!. 
+%"[","]",",","[","]",
+varnames0(L0),
+newlines1(_),spaces1(_),varnames0(L2),
+	{append(L0,L2,L1)},!. 
+	*/
+	
+varnames(L3) --> %{trace},
+%"[",
+newlines1(_),spaces1(_),varnames0(L3),%"]",
+%",",
+%newlines1(_),spaces1(_),varnames(L2),
+	%{append(L1,L2,L3)},
+	!. 
+
 varnames(L1) --> %{trace},
 "[",newlines1(_),spaces1(_),"]",",",newlines1(_),spaces1(_),varnames(L2),
 	{append([[]],L2,L1)},!. 
