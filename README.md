@@ -217,3 +217,4 @@ Output:
 ]
 ```
 
+* See also <a href="https://github.com/luciangreen/State-Machine-to-List-Prolog">State Machine to List Prolog</a>, which converts from the State Machine generated within SSI (a Prolog compiler written in Prolog) to List Prolog (a version of Prolog with algorithms written as lists).  The State Machine may be operated on by, for example, optimisers.
