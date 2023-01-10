@@ -288,8 +288,14 @@ name1012(XXs) --> %{trace},
 
 name2(X1) --> name20(X1).%%, {atom_string(X2,X1)}.
 
-name20(XXs) --> [X], 
+
+name20(XXs) --> [X], %{trace},
+%lookahead(Y),
 	{char_code(Ch1,X),%%char_type(X,alnum)->true;
+	%trace,
+	%writeln(Y),
+	%(Ch1='-'->trace;true),
+	%((Ch1='-',[Y]=`>`)->fail;(
 	(Ch1='+'->true;(Ch1='-'->true;(Ch1='*'->true;
 	(Ch1='/'->true;(Ch1='<'->true;(Ch1='>'->true;
 	(Ch1='='))))))),atom_string(CA,Ch1),
@@ -419,7 +425,7 @@ lookahead(B2,A,A):-
 %trace,
 	%member(B,B1),
 	%string_codes(B,B2),
-	append(B2,_D,A),!.
+	append([B2],_D,A),!.
 
 lookahead2(B1,A,A):-
 %trace,
@@ -551,6 +557,7 @@ line(A) --> %%spaces1(_),
 
 line(A) --> %%spaces1(_), 
 		name1(Word11), %% name(A,B,C).
+		%{trace,(Word11="->"->trace;true)},
 		{%trace,
 		not(Word11=findall)},
 		"(",newlines1(_),varnames(Varnames),")",
@@ -561,7 +568,10 @@ line(A) --> %%spaces1(_),
 		newlines1(_), %% A = B*Y
 		(name1(_Is)|name2(_Equals)), newlines1(_), 
 		name1(Variable2), 	
-		name2(Operator), name1(Variable3), 	
+		name2(Operator), 
+		{%trace,
+		not(Operator=(->))},
+		name1(Variable3), 	
 		{ %% A=B*Y 
 		v_if_string_or_atom(Variable2,Variable2a),
 		v_if_string_or_atom(Variable3,Variable3a),
@@ -736,7 +746,7 @@ line(Word1) -->
 		
 line(Word1) -->
 		"(",newlines1(_),line(Word2),")",{Word1=[Word2]},!.
-line(Word1) -->
+line(Word1) -->%{trace},
 		"(",newlines1(_),line(Word2),"->",newlines1(_N1),
 		line(Word3),";",newlines1(_N2),
 		line(Word4),")",
