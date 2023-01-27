@@ -43,6 +43,7 @@ list([L|Ls]) --> [L], list(Ls).
 %file(N) --> newlines1(N),!.
 
 file(Ls2) --> newlines1(_N1),predicate(L),%newlines1(N2),
+{writeln1(L)},
 file(Ls),
 %{writeln1(L)}, %%***
  {foldr(append,[%N1,
@@ -327,7 +328,7 @@ varnames([L1]) --> varname1(L1),
 **/
 
 varnames01(L1) --> %{trace},
-"[",varnames0(L2),"]", 
+"[",newlines1(_N1),varnames0(L2),newlines1(_N1),"]",newlines1(_N1), 
 {L1 = L2},
 !. 
 
@@ -342,13 +343,13 @@ newlines1(_),varnames(L2),
 
 
 varnames(L3) --> %{trace},
-"[",varnames0(L1),"]",newlines1(_),"|",varnames(L2),
+"[",newlines1(_N1),varnames0(L1),newlines1(_N1),"]",newlines1(_),"|",varnames(L2),newlines1(_N1),
 	{maplist(append,[[[[L1],"|",L2]]],[L3])},!. 
 
 
 
 varnames(L1) --> %{trace},
-"[",newlines1(_),varnames0(L2),"]", 
+"[",newlines1(_),varnames0(L2),newlines1(_N1),"]",newlines1(_N1),
 {L1 = [L2]},
 !. 
 
@@ -363,7 +364,7 @@ newlines1(_),spaces1(_),varnames0(L2),
 	
 varnames(L3) --> %{trace},
 %"[",
-newlines1(_),varnames0(L3),%"]",
+newlines1(_),varnames0(L3),newlines1(_N1),%"]",
 %",",
 %newlines1(_),spaces1(_),varnames(L2),
 	%{append(L1,L2,L3)},
@@ -380,7 +381,7 @@ varnames(L1) --> %{trace},
 
 
 varnames(L1) --> %{trace},
-"[",newlines1(_),"]", 
+"[",newlines1(_),"]", newlines1(_N1),
 {L1 = []},
 !. 
 
@@ -394,12 +395,12 @@ lookahead1,%{notrace},
 
 varnames0(Ls2) --> %{trace},
 varname1(L1),newlines1(_),",", newlines1(_),%%{writeln(L)}, %%***
-	varnames0(Ls), 
+	varnames0(Ls), newlines1(_N1),
 	{append([L1],Ls,Ls2)},!. 
 %	{maplist(append,[[[L1,Ls]]],[[Ls2]])},!. 
 
-varnames0(Ls2) --> varname1(L1),"|", %%{writeln(L)}, %%***
-	varnames0([Ls]), 
+varnames0(Ls2) --> varname1(L1),newlines1(_N1),"|", newlines1(_N1),%%{writeln(L)}, %%***
+	varnames0([Ls]), newlines1(_N1),
 	{append_list([L1,"|",Ls],Ls2)},!. 
 %	{maplist(append,[[[L1,"|",Ls]]],[Ls2])},!. 
 
@@ -433,7 +434,7 @@ lookahead2(B1,A,A):-
 	string_codes(B,B2),
 	append(B2,_D,A).
 
-varname1([]) --> "[",newlines1(_),"]". %%{writeln(L)}, %%***
+varname1([]) --> "[",newlines1(_),"]",newlines1(_N1). %%{writeln(L)}, %%***
 varname1(L4) --> %{trace},
 name11(L1), newlines1(_),%%{writeln(L)}, %%***
 {%trace,%%atom_string(L1,L10),string_codes(L2,L10),
@@ -442,9 +443,9 @@ L1,L3),L4=[v,L3])))%%L3A
 
 %%,term_to_atom(L3A,L4)%%,atom_string(L4A,L4)
 }.
-varname1(L4) --> "(",newlines1(_),line(L4),newlines1(_),")".
+varname1(L4) --> "(",newlines1(_),line(L4),newlines1(_),")",newlines1(_N1).
 varname1(L1) --> 
-"[",newlines1(_),varnames0(L2),newlines1(_),"]", 
+"[",newlines1(_),varnames0(L2),newlines1(_),"]",newlines1(_N1), 
 {L1 = L2},!.
 
 varname1(A) --> varname_term(A).
@@ -523,7 +524,7 @@ comments3(_) --> spaces1(_),name1(_).%%[X], [Y], {string_codes(X1,[X]),
 
 
 lines(Ls2) --> %newlines1(_),
-line(L),",",newlines1(_),
+line(L),newlines1(_),",",newlines1(_),
 lines(Ls), %trace,
 %{delete([L,N|Ls],[],Ls2)}, !. 
 %lines(Ls2) --> line(L),",",newlines1(N),
@@ -542,8 +543,8 @@ varname_or_names(Varname) --> varname1(Varname).
 
 %varname1
 line(A) -->%{trace},
-		varname_or_names(Varnames1),"=",
-		varname_or_names(Varnames2),
+		varname_or_names(Varnames1),newlines1(_N1),"=",newlines1(_N1),
+		varname_or_names(Varnames2),newlines1(_N1),
 		{A=[[n,equals4],[Varnames1,Varnames2]]
 		}.
 
@@ -556,22 +557,22 @@ line(A) --> %%spaces1(_),
 		{A=[[n,Word11],Lines]},!.
 
 line(A) --> %%spaces1(_), 
-		name1(Word11), %% name(A,B,C).
+		name1(Word11),newlines1(_N1), %% name(A,B,C).
 		%{trace,(Word11="->"->trace;true)},
 		{%trace,
 		not(Word11=findall)},
 		"(",newlines1(_),varnames(Varnames),")",
 		{A=[[n,Word11],Varnames]},!.
 line(A) --> %%spaces1(_), 
-		name1(Variable1),{%trace,
+		name1(Variable1),newlines1(_N1),{%trace,
 		not(Variable1=findall)},
 		newlines1(_), %% A = B*Y
 		(name1(_Is)|name2(_Equals)), newlines1(_), 
-		name1(Variable2), 	
-		name2(Operator), 
+		name1(Variable2), 	newlines1(_N1),
+		name2(Operator),newlines1(_N1), 
 		{%trace,
 		not(Operator=(->))},
-		name1(Variable3), 	
+		name1(Variable3), 	newlines1(_N1),
 		{ %% A=B*Y 
 		v_if_string_or_atom(Variable2,Variable2a),
 		v_if_string_or_atom(Variable3,Variable3a),
@@ -635,15 +636,15 @@ line(A) --> %%spaces1(_),
 		A=[[n,equals4],[Word10a,""]]},!.
 line(A) --> %%spaces1(_), 
    %{trace},
-		name1(Word10),{%trace,
+		name1(Word10),newlines1(_N1),{%trace,
 		not(Word10=findall)},
 		%spaces1(_), 
 		%% A = [B,C]
-		"=",
+		"=",newlines1(_N1),
 		%name2(Word21),
 		 %spaces1(_), 
-		"[",
-		varnames(Word11),"]",
+		"[",newlines1(_N1),
+		varnames(Word11),newlines1(_N1),"]",newlines1(_N1),
 		{v_if_string_or_atom(Word10,Word10a),
 		%v_if_string_or_atom(Word11,Word11a),
 		%v_if_string_or_atom(Word12,Word12a),
@@ -657,8 +658,8 @@ line(A) --> %%spaces1(_),
 		%"=",
 		%name2(Word21),
 		 %spaces1(_), 
-		"[",
-		varnames(Word11),"]",
+		"[",newlines1(_N1),
+		varnames(Word11),newlines1(_N1),"]",newlines1(_N1),
 		{%v_if_string_or_atom(Word10,Word10a),
 		%v_if_string_or_atom(Word11,Word11a),
 		%v_if_string_or_atom(Word12,Word12a),
@@ -672,9 +673,9 @@ line(A) --> %%spaces1(_),
 		%"=",
 		%name2(Word21),
 		 %spaces1(_), 
-		"[",
+		"[",newlines1(_N1),
 		%varnames(Word11),
-		"]",
+		"]",newlines1(_N1),
 		{%v_if_string_or_atom(Word10,Word10a),
 		%v_if_string_or_atom(Word11,Word11a),
 		%v_if_string_or_atom(Word12,Word12a),
@@ -696,14 +697,14 @@ line(A) --> %%spaces1(_),
 		v_if_string_or_atom(Word12,Word12a),
 		A=[[n,equals4],[Word10a,[Word11a,"|",Word12a]]]},!.
 line(A) --> %%spaces1(_), 
-		name1(Word10),{%trace,
+		name1(Word10),newlines1(_N1),{%trace,
 		not(Word10=findall)},
 		%spaces1(_), 
 		%% A = [B,C]
-		"=",
+		"=",newlines1(_N1),
 		%name2(Word21),
 		 %spaces1(_), 
-		varnames3(Word11),
+		varnames3(Word11),newlines1(_N1),
 		{v_if_string_or_atom(Word10,Word10a),
 		%v_if_string_or_atom(Word11,Word11a),
 		A=[[n,=],[Word10a,Word11]]},!.
@@ -722,23 +723,23 @@ line(A) --> %%spaces1(_),
 		A=[[n,=],[Word10a,Word11a]]},!.
 
 line(A) --> %%spaces1(_), 
-		name1(Word11), %% name(A,B,C)
+		name1(Word11), newlines1(_N1),%% name(A,B,C)
 		{%trace,
 		Word11=findall},
 		"(",newlines1(_),
 		varnames01(Varnames),newlines1(_),",",newlines1(_),
 		"(",newlines1(_),lines(A1),newlines1(_),")",newlines1(_),",",
 		newlines1(_),
-		varnames01(Varnames2),newlines1(_),")",
+		varnames01(Varnames2),newlines1(_),")",newlines1(_N1),
 		{A=[[n,Word11],[Varnames,A1,Varnames2]]},!.
 
 line(A) --> %%spaces1(_), 
-		name1(Word11), %% name(A,B,C)
+		name1(Word11), newlines1(_N1),%% name(A,B,C)
 		{%trace,
 		Word11=findall},
-		"(",newlines1(_),varnames01(Varnames),",",newlines1(_),
+		"(",newlines1(_),varnames01(Varnames),newlines1(_N1),",",newlines1(_),
 		line(A1),newlines1(_),",",newlines1(_),
-		varnames01(Varnames2),newlines1(_),")",
+		varnames01(Varnames2),newlines1(_),")",newlines1(_N1),
 		{A=[[n,Word11],[Varnames,A1,Varnames2]]},!.
 		
 line(Word1) -->
