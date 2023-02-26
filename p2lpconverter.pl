@@ -43,7 +43,7 @@ list([L|Ls]) --> [L], list(Ls).
 %file(N) --> newlines1(N),!.
 
 file(Ls2) --> newlines1(_),predicate(L),%newlines1(N2),
-{writeln1(L)},
+%{writeln1(L)},
 file(Ls),
 %{writeln1(L)}, %%***
  {foldr(append,[%N1,
