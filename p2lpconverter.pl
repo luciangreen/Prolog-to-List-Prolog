@@ -524,7 +524,9 @@ comments3(_) --> spaces1(_),name1(_).%%[X], [Y], {string_codes(X1,[X]),
 
 
 lines(Ls2) --> %newlines1(_),
-line(L),newlines1(_),",",newlines1(_),
+line(L),newlines1(_),",",
+%{writeln(L)}, %%***
+newlines1(_),
 lines(Ls), %trace,
 %{delete([L,N|Ls],[],Ls2)}, !. 
 %lines(Ls2) --> line(L),",",newlines1(N),
