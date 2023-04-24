@@ -20,10 +20,17 @@ a(1.1).
 a("dsf").
 a('dd').
 a(A):-findall(A,hello(A),B).
+a(A):-findall(A,hello(A),B),!.
 a(A):-findall(A,(hello(A),hello(A)),B).
 a([A]):-A is 1+1.
+ef(G):-(h(I)->true;true).
 ef(G):-(h(I)->true;true),!.
+ef(G):-(h(I)->true).
+ef(G):-(h(I)->true),!.
+compound21(T,U)->item(I).
+compound21(T,U)->item(I),!.
 a([A]).
 a(A).
+compound21(T,U)->{wrap(I,Itemname1),append(T,Itemname1,V)}.
 compound21(T,U)->item(I),lookahead("]"),{wrap(I,Itemname1),append(T,Itemname1,V)},compound212(V,U).
 a(A):-findall([A,C],hello(A,C),B).
