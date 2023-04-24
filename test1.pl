@@ -31,6 +31,7 @@ compound21(T,U)->item(I).
 compound21(T,U)->item(I),!.
 a([A]).
 a(A).
+compound21(T,U)->{wrap(I,Itemname1)}.
 compound21(T,U)->{wrap(I,Itemname1),append(T,Itemname1,V)}.
 compound21(T,U)->item(I),lookahead("]"),{wrap(I,Itemname1),append(T,Itemname1,V)},compound212(V,U).
 a(A):-findall([A,C],hello(A,C),B).

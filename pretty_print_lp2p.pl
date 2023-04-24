@@ -75,16 +75,19 @@ pp_lp2p2(List1,S1,S2,N) :-
 	 '\n',Ts,'',
 	 S5,'\n',Ts,')'],S2));
 	 
-	(List2=[[n,code],Code]-> % if then else
+	(List2=[[n,code],Code1]-> % if then else
 	(N2 is N+1,
-	pp_lp2p2([Code],'',S4,N2),
+	(%trace,
+	(Code1=[A|_],not(predicate_or_rule_name(A)))->
+	Code1=Code;[Code1]=Code),
+	pp_lp2p2(Code,'',S4,N2),
 	%pp_lp2p2([Then],'',S5,N2),
 	length(Counter,N),
 	findall('\t',member(_,Counter),Ts1),
 	concat_list(Ts1,Ts),
 	%pp_lp2p2(Lists3,'',S3,N),
 	concat_list([S1,'\n',Ts,%'[[n,"->"]',',',
-	'\n',Ts,
+	%'\n',Ts,
 	 '{',
 	 S4,'',%'\n',Ts,
 	 %'\n',Ts,'',
@@ -185,9 +188,12 @@ pp_lp2p2(List1,S1,S2,N) :-
 	 ')',',',S3],S2));
 	%concat_list([S1,'\n',Ts,S4,',','\n',Ts,S5,',',S3],S2));
 	
-	(List2=[[n,code],Code]-> % if then else
+	(List2=[[n,code],Code1]-> % if then else
 	(N2 is N+1,
-	pp_lp2p2([Code],'',S4,N2),
+	(%trace,
+	(Code1=[A|_],not(predicate_or_rule_name(A)))->
+	Code1=Code;[Code1]=Code),
+	pp_lp2p2(Code,'',S4,N2),
 	%pp_lp2p2([Then],'',S5,N2),
 	%pp_lp2p2([Else],'',S51,N2),
 	length(Counter,N),
