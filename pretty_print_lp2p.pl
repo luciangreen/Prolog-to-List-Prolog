@@ -69,7 +69,7 @@ pp_lp2p2(List1,S1,S2,N) :-
 	concat_list(Ts1,Ts),
 	%pp_lp2p2(Lists3,'',S3,N),
 	concat_list([S1,'\n',Ts,%'[[n,"->"]',',',
-	'\n',Ts,
+	%'\n',Ts,
 	 '(',
 	 S4,'->',%'\n',Ts,
 	 '\n',Ts,'',
@@ -184,7 +184,7 @@ pp_lp2p2(List1,S1,S2,N) :-
 	Ts,'',
 	 S4,'->',%'\n',Ts,
 	 '\n',%Ts,'],[',
-	 S5,%'\n',Ts,
+	 S5,'\n',Ts,
 	 ')',',',S3],S2));
 	%concat_list([S1,'\n',Ts,S4,',','\n',Ts,S5,',',S3],S2));
 	
