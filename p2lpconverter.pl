@@ -477,7 +477,7 @@ string_codes(X3,X4),X1=[[n,comment],[X3]]},!.
 
 %comment1([]) --> [], !.
 comment3([XA|Xs]) --> [XA],%[XB],
- lookahead([XB]),{not((char_code('*',XA),char_code('/',XB)))}, comment3(Xs), !.
+ lookahead(XB),{not((char_code('*',XA),char_code('/',XB)))}, comment3(Xs), !.
 %%newlines1([X]) --> [X], {char_type(X,newline)},!.
 comment3([XA,XB]) --> [XA],[XB], {char_code('*',XA),char_code('/',XB)}, !.
 
