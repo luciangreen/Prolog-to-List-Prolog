@@ -124,6 +124,17 @@ pp_lp2p2(List1,S1,S2,N) :-
 	concat_list(Ts1,Ts),
 	concat_list([S1,'\n',Ts,List2a],S2));
 
+	(List2=[[n,comment],[Comment]]-> % if then else
+	(%N2 is N+1,
+	%pp_lp2p2([Comment],'',S4,N),
+	%pp_lp2p2([Then],'',S5,N2),
+	%pp_lp2p2([Else],'',S51,N2),
+	length(Counter,N),
+	findall('\t',member(_,Counter),Ts1),
+	concat_list(Ts1,Ts),
+	%pp_lp2p2(Lists3,'',S3,N),
+	concat_list([S1,'\n',Ts,Comment],S2));
+	
 	(%pp_lp2p2(List2,'',List2a,N),
 	List2=[[n,_]|_]->
 	(pp4_lp2p3_1_4(List2,List2a),
@@ -142,7 +153,7 @@ pp_lp2p2(List1,S1,S2,N) :-
 	'\n',Ts,'(',
 	List2a,
 	'\n',Ts,')'
-	],S2)))))))),
+	],S2))))))))),
 	!.
 pp_lp2p2(List1,S1,S2,N) :-
 	List1=[List2|Lists3],
@@ -239,6 +250,17 @@ pp_lp2p2(List1,S1,S2,N) :-
 	(S3=''->Comma='';Comma=','),
 	concat_list([S1,'\n',Ts,List2a,Comma,S3],S2));
 
+	(List2=[[n,comment],[Comment]]-> % if then else
+	(pp_lp2p2(Lists3,'',S3,N),%N2 is N+1,
+	%pp_lp2p2([Comment],'',S4,N),
+	%pp_lp2p2([Then],'',S5,N2),
+	%pp_lp2p2([Else],'',S51,N2),
+	length(Counter,N),
+	findall('\t',member(_,Counter),Ts1),
+	concat_list(Ts1,Ts),
+	%pp_lp2p2(Lists3,'',S3,N),
+	concat_list([S1,'\n',Ts,Comment,S3],S2));
+
 	(%pp_lp2p2(List2,'',List2a,N),
 	%trace,
 	(List2=[[N_or_v,_]|_],(N_or_v=n->true;N_or_v=v))->
@@ -262,7 +284,7 @@ pp_lp2p2(List1,S1,S2,N) :-
 	List2a,
 	'\n',Ts,')',
 	',',S3
-	],S2)))))))),
+	],S2))))))))),
 	%concat_list([S1,%'\n',Ts,
 	%List2a,',',S3],S2)))),
 
@@ -335,6 +357,19 @@ pp4_lp2p3_1(List1,S3) :-
 	concat_list([String%,'\n\n'
 	],S3).
 	
+pp4_lp2p3_2(List1,String) :-
+	List1=[[_N10,comment],
+		[Comment]],
+	%term_to_atom(List2,List2a),
+	%concat_list([S1,List2a,'\n'],S3)
+	
+	
+	%interpretstatementlp2p5(Variables,'',Variables2,false),
+	concat_list(['',Comment%,
+	%',',%Symbol1,
+	%'\n'
+	],String),!.
+
 pp4_lp2p3_2(List1,String) :-
 	List1=[[_N10,Name],
 		Variables],
