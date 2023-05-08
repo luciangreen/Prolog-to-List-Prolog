@@ -65,7 +65,7 @@ list([L|Ls]) --> [L], list(Ls).
 %file(N) --> newlines1(N),!.
 
 file(Ls2) --> newlines1(N1),predicate(L),newlines1(N2),
-{writeln1(L)},
+%{writeln1(L)},
 file(Ls),
 %{writeln1(L)}, %%***
  {foldr(append,[N1,
@@ -631,7 +631,7 @@ comments3(_) --> spaces1(_),name1(_).%%[X], [Y], {string_codes(X1,[X]),
 
 
 lines(Ls2) --> %{trace},%newlines1(_),
-line(L),newlines1(N1),",",
+newlines1(_),line(L),newlines1(N1),",",
 newlines1(N2),
 %{writeln(L)}, %%***
 lines(Ls), %trace,
