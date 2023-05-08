@@ -1,3 +1,14 @@
+:- use_module(library(date)).
+
+:-include('luciancicd.pl').
+:-include('../Prolog-to-List-Prolog/p2lpconverter.pl').
+
+use_module(library(pio)).
+use_module(library(dcg/basics)).
+
+
+:-dynamic keep_comments/1.
+
 a:-a.
 a(/*1*/%2
 

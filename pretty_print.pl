@@ -210,6 +210,15 @@ pp3(List1,S1,S3) :-
 		_Variables]),
 	term_to_atom(List2,List2a),
 	concat_list([S1,List2a,',\n'],S3))->true;
+	
+	((List2=[":-",[_,_Word11],_Varnames%N,
+		]%,N3
+		;List2=[":-",[_,_Word11],[_Word13,"/",_Word12]%,Varnames%N,
+		]
+		),
+	term_to_atom(List2,List2a),
+	concat_list([S1,List2a,',\n'],S3))->true;
+	
 	((List2=[[N1,Name],Variables1,Symbol,Body]->
 	(term_to_atom(Variables1,Variables2),
 	concat_list([S1,'[[',N1,',',Name,'],',Variables2,

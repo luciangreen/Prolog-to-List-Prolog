@@ -332,7 +332,16 @@ pp_lp2p3(List1,S1,S3) :-
 
 	((pp4_lp2p3_4(List1,String,B1),
 	%string_concat(B1,",",B11),
-	concat_list([S1,String,B1,'.\n\n'],S3))))))),!.
+	concat_list([S1,String,B1,'.\n\n'],S3)->true;
+
+	((pp4_lp2p3_5(List1,String),
+	%string_concat(B1,",",B11),
+	concat_list([S1,String,'.\n\n'],S3)->true;
+
+	((pp4_lp2p3_6(List1,String),
+	%string_concat(B1,",",B11),
+	concat_list([S1,String,'.\n\n'],S3))
+	))))))))),!.
 
 pp4_lp2p3_1_4(L,S) :-
 	(pp4_lp2p3_1(L,S)->true;
@@ -400,3 +409,23 @@ pp4_lp2p3_4(List2,String,B1) :-
 	concat_list([Name,Symbol1,'\n'],String),
 	%trace,
 	pp_lp2p2(Body,'',B1,1).
+
+pp4_lp2p3_5(List2,String) :-
+	List2=[Symbol,[_,Word11],[Word13,"/",Word12]%,Varnames%N,
+		],
+	symbol_1_lp2p(Symbol,Symbol1),
+	%term_to_atom(Variables1,Variables2),
+	concat_list([Symbol1,Word11," ",Word13,"/",Word12],String).
+	%trace,
+
+	%pp_lp2p2(Body,'',B1,1).
+
+pp4_lp2p3_6(List2,String) :-
+	List2=[Symbol,[_,Word11],Variables1%N,
+		],
+	symbol_1_lp2p(Symbol,Symbol1),
+	%term_to_atom(Variables1,Variables2),
+	interpretstatementlp2p5(Variables1,'',Variables2,false),
+	concat_list([Symbol1,Word11,'(',Variables2,')'],String).
+	%trace,
+	%pp_lp2p2(Body,'',B1,1).

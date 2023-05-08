@@ -86,6 +86,32 @@ file(Ls2) --> newlines1(N),file(Ls),
 !.
 */
 %%predicate([]) --> newlines1(_).
+
+predicate(A2) -->
+		":-",newlines1(_),name1(Word11),
+		"(",newlines1(N1),varnames(Varnames),")",
+		newlines1(N2),%":-",%newlines1(N3),%{trace},
+		%lines(L),
+		 ".",
+		{foldr(append,[[[":-",[n,Word11],Varnames%N,
+		]],N1,N2%,N3
+		],A2)
+		%delete(A,[],A2)
+		}.
+predicate(A2) -->
+		":-",newlines1(_),name1(Word11),
+		%"(",
+		newlines1(N1),name1(Word13),%varnames(Varnames),newlines1(_),
+		"/",newlines1(_),name1(Word12),%")",
+		newlines1(N2),%":-",%newlines1(N3),%{trace},
+		%lines(L),
+		 ".",
+		{foldr(append,[[[":-",[n,Word11],[Word13,"/",Word12]%,Varnames%N,
+		]],N1,N2%,N3
+		],A2)
+		%delete(A,[],A2)
+		}.
+
 predicate(A) -->
 		name1(Word11), 
 		".", {A=[[[n,Word11]]]
