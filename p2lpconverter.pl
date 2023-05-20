@@ -960,7 +960,7 @@ atom_string(A,String))
 
 string_atom2(String1,Atom1) :-
 	contains_string(Atom1),%trace,
-	delete1(Atom1,"\"",String1),
+	delete1_p2lp(Atom1,"\"",String1),
 	%string_atom(String1,String2),
 	%replace(String2,"'","#",String1),
 	%string_atom(String1,String3),
@@ -969,7 +969,7 @@ string_atom2(String1,Atom1) :-
 	atom(Atom1),%String1=Atom1,
 	
 	%replace(Atom1,"\"","&",String2),
-	delete1(Atom1,"'",%"#",
+	delete1_p2lp(Atom1,"'",%"#",
 	String3),
 	
 	string_atom(String3,String1),
@@ -992,7 +992,7 @@ v_if_string_or_atom(String_or_atom,V) :-
 	V=[v,String_or_atom];
 	V=String_or_atom),!.
 	
-delete1(A	,Find,F) :-
+delete1_p2lp(A	,Find,F) :-
 %string_concat("%",A1,A2),
 %string_concat(A2,"%",A),
 		split_string(A,Find,"",B),%findall([C,Replace],(member(C,B)),D),
