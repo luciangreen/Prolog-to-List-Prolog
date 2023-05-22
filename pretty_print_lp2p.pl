@@ -319,6 +319,15 @@ pp_lp2p3(List1,S1,S3) :-
 	%trace,
 	%pp_lp2p2(Body,'',B1,1),
 	%string_concat(B1,",",B11),
+	concat_list([S1,String,"\n"%,%B1,
+	%'.\n\n'
+	],S3))->true;
+	
+	((pp4_lp2p3_21(List1,String),
+
+	%trace,
+	%pp_lp2p2(Body,'',B1,1),
+	%string_concat(B1,",",B11),
 	concat_list([S1,String,".\n"%,%B1,
 	%'.\n\n'
 	],S3))->true;
@@ -341,15 +350,16 @@ pp_lp2p3(List1,S1,S3) :-
 	((pp4_lp2p3_6(List1,String),
 	%string_concat(B1,",",B11),
 	concat_list([S1,String,'.\n\n'],S3))
-	))))))))),!.
+	)))))))))),!.
 
 pp4_lp2p3_1_4(L,S) :-
 	(pp4_lp2p3_1(L,S)->true;
 	(pp4_lp2p3_2(L,S)->true;
+	(pp4_lp2p3_21(L,S)->true;
 	((pp4_lp2p3_3(L,String,B1),
 	string_concat(String,B1,S))->true;
 	(pp4_lp2p3_4(L,String,B1),
-	string_concat(String,B1,S))))),!.
+	string_concat(String,B1,S)))))),!.
 	
 pp4_lp2p3_1(List1,S3) :-
 	List1=[[_N10,Name]],
@@ -379,7 +389,7 @@ pp4_lp2p3_2(List1,String) :-
 	%'\n'
 	],String),!.
 
-pp4_lp2p3_2(List1,String) :-
+pp4_lp2p3_21(List1,String) :-
 	List1=[[_N10,Name],
 		Variables],
 	%term_to_atom(List2,List2a),
