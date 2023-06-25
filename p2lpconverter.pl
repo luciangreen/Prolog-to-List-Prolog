@@ -1,5 +1,6 @@
 :-include('../listprologinterpreter/la_strings.pl').
 :-include('pretty_print.pl').
+:-include('p2lpverify.pl').
 
 %% p2lpconverter(S1),pp0(S1,S2),writeln(S2).
 
@@ -35,23 +36,25 @@ turn_keep_comments_off :-
 
 
 p2lpconverter([string,String],List3) :-
+	turn_keep_comments_on,
 	%File1="test1.pl",
 	string_codes(String,String1),
 	(phrase(file(List3),String1)->true;%(writeln(Error),
 	fail).
 
 p2lpconverter([file,File1],List3) :-
+	turn_keep_comments_on,
 	%File1="test1.pl",
 	readfile(File1,"test1.pl file read error.",List3).
 
 
 p2lpconverter(List3) :-
+	turn_keep_comments_on,
 	File1="test1.pl",	
 	readfile(File1,"test1.pl file read error.",List3).
 
 readfile(List1,_Error,List3) :-
 	%init_keep_comments,
-	turn_keep_comments_on,
 	phrase_from_file_s(string(List6), List1),
 	(phrase(file(List3),List6)->true;%(writeln(Error),
 	fail).
@@ -500,7 +503,8 @@ lookahead1(A,A) :- append(`)`,_,A).
 %lookahead3(A,A) :- lookahead1(A,A)
 %lookahead3(A,A) :- append(`,`,_,A).
 
-lookahead(B2,A,A):-
+%lookahead(_,[],[]) :-!.
+lookahead(B2,A,A) :-
 %trace,
 	%member(B,B1),
 	%string_codes(B,B2),
@@ -543,10 +547,16 @@ comment(X1) --> %spaces1(_),
 [X], {char_code('%',X)},comment1(Xs), {append([X],Xs,X2),string_codes(X3,X2),X1=[[[n,comment],[X3]]]},!.
 
 %comment1([]) --> [], !.
-comment1([X|Xs]) --> [X], lookahead(_A),{not(char_type(X,newline))%,not(A=[])
+comment1([X|Xs]) --> %{trace},
+[X], %lookahead(_A),
+{not(char_type(X,newline))%,not(A=[])
 }, comment1(Xs), !.
 %%newlines1([X]) --> [X], {char_type(X,newline)},!.
+%comment1([X]) --> [X], %lookahead(A), 
+%!.
+%{(char_type(X,newline)->true;A=[])}, !.
 comment1([]) --> [X], lookahead(A), {(char_type(X,newline)->true;A=[])}, !.
+comment1([]) --> [], !.
 
 
 comment2(X1) --> %spaces1(_),
@@ -579,7 +589,8 @@ newlines1(Xs) --> [X], {char_type(X,space)}, newlines1(Xs),
 %},
 !.
 newlines1(Xs2
-) --> comment(X), newlines1(Xs), %{append([X],Xs,Xs2)},
+) --> %{trace},
+comment(X), newlines1(Xs), %{append([X],Xs,Xs2)},
 {keep_comments(Y),(member(percentage_comments,Y)->append(X,Xs,Xs2);Xs2=[])},
 !.
 newlines1(Xs2
@@ -938,11 +949,11 @@ concat_list_term(List,String) :-
 	concat_list(List1,String).
 **/
 	
-contains_string(Atom) :-
+contains_string(Atom,String) :-
 	string_concat(A,B,Atom),
 	string_length(A,1),
 	A="\"",
-	string_concat(_,C,B),
+	string_concat(String,C,B),
 	string_length(C,1),
 	C="\"",!.
 
@@ -959,18 +970,31 @@ atom_string(A,String))
 
 
 string_atom2(String1,Atom1) :-
-	contains_string(Atom1),%trace,
+	contains_string(Atom1,_String2),%trace,
+	%foldr(string_concat,String2,String1),
+%trace,
+	%String1=Atom1,
+	%string_atom(String1,String2),
+	%string_strings(Atom1,A),
+	%append([_],A1,A),
+	%append(A2,[_],A1),
+	%foldr(string_concat,A2,String1),
 	delete1_p2lp(Atom1,"\"",String1),
 	%string_atom(String1,String2),
 	%replace(String2,"'","#",String1),
-	%string_atom(String1,String3),
+	%string_atom(String1,String2),
 	!.
 string_atom2(String1,Atom1) :-
 	atom(Atom1),%String1=Atom1,
-	
+	%trace,
 	%replace(Atom1,"\"","&",String2),
 	delete1_p2lp(Atom1,"'",%"#",
 	String3),
+
+	%string_strings(Atom1,A),
+	%append([_],A1,A),
+	%append(A2,[_],A1),
+	%foldr(string_concat,A2,String3),
 	
 	string_atom(String3,String1),
 	!.
@@ -993,9 +1017,14 @@ v_if_string_or_atom(String_or_atom,V) :-
 	V=String_or_atom),!.
 	
 delete1_p2lp(A	,Find,F) :-
+%writeln1(delete1_p2lp(A	,Find,F)),
 %string_concat("%",A1,A2),
 %string_concat(A2,"%",A),
-		split_string(A,Find,"",B),%findall([C,Replace],(member(C,B)),D),
-		maplist(append,[[B]],[E]),concat_list(E,F).%,string_concat(F,G,F1),string_length(G,1).
+%trace,
+string_strings(A,B),
+(append([Find],C,B)->true;C=B),
+(append(D,[Find],C)->true;D=C),
+foldr(string_concat,D,F).		%split_string(A,Find,"",B),%findall([C,Replace],(member(C,B)),D),
+		%maplist(append,[[B]],[E]),concat_list(E,F).%,string_concat(F,G,F1),string_length(G,1).
 	%string_concat("%",F3,F2),	
 	%string_concat(F,"%",F3).
