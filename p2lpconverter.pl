@@ -969,9 +969,12 @@ term_to_atom(A,Atom),
 atom_string(A,String))
 );String=Atom)->((writeln1(string_atom2(String,Atom))));(writeln1(string_atom2(String,Atom)),false)).
 
+% \" \\\"\" -> " \""
+% or '" \\""' -> '" \""'
 
 string_atom2(String1,Atom1) :-
-	contains_string(Atom1,_String2),%trace,
+%writeln1(string_atom2(String1,Atom1)),
+	contains_string(Atom1,String2),%trace,
 	%foldr(string_concat,String2,String1),
 %trace,
 	%String1=Atom1,
@@ -980,7 +983,12 @@ string_atom2(String1,Atom1) :-
 	%append([_],A1,A),
 	%append(A2,[_],A1),
 	%foldr(string_concat,A2,String1),
-	delete1_p2lp(Atom1,"\"",String1),
+	
+	%delete1_p2lp(Atom1,"\"",String1),
+ atomic_list_concat(A,"\\",String2),
+ atomic_list_concat(A,"",Atom2),
+ atom_string(Atom2,String1),
+	
 	%string_atom(String1,String2),
 	%replace(String2,"'","#",String1),
 	%string_atom(String1,String2),
