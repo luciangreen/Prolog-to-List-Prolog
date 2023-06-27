@@ -27,7 +27,7 @@ p2lp_test1(N,Passed) :-
 	)->(Passed=passed,writeln0([p2lp_test,N,passed]));(Passed=failed,writeln0([p2lp_test,N,failed]))),!.
 
 
-p2lp_test(1,":- use_module(library(date)).",
+p2lp_test(1,":-use_module(library(date)).",
 [
 [":-",[n,use_module],[[[n,library],[date]]]]
 ]
@@ -72,9 +72,9 @@ p2lp_test(7,"a:-a.",
 ]
 ).
 
-p2lp_test(8,"a(/*1*/%2
-
-A,B).",
+p2lp_test(8,"a(A,B).
+/*1*/
+%2",
 [
 [[n,a],[[v,a],[v,b]]],
 [[n,comment],["/*1*/"]],
