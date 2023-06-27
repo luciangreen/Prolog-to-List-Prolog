@@ -874,6 +874,7 @@ line(Word1) -->%{trace},
 		line(Word3),";",newlines1(_N2),
 		line(Word4),")",
 		{%(Word4=[[[[n,_]|_]|_]|_]->Word4=[Word41];Word4=Word41),
+		%if_one_item_then_remove_brackets()
 		Word1=[[n,"->"],[Word2,Word3,Word4]]},!.
 line(Word1) -->
 		"(",newlines1(_),
