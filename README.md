@@ -35,7 +35,7 @@ Convert Prolog code to List Prolog code by copying Prolog algorithm into `test1.
 
 # Tests
 
-* Run `p2lp_test(A,B).`
+* Run `p2lp_test(A,B)` or `p2lp_test1(N,B)` where N is the test number from <a href="https://github.com/luciangreen/Prolog-to-List-Prolog/blob/master/p2lpverify.pl">Prolog to List Prolog/p2lpverify.pl</a>.
 
 # Prolog to Simple List Prolog
 
