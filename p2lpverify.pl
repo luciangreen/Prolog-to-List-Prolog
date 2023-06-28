@@ -82,7 +82,9 @@ p2lp_test(8,"a(A,B).
 ]
 ).
 
-p2lp_test(9,"a/*2*/:-/*3*/d(E).",
+p2lp_test(9,"a:-d(E).
+/*2*/
+/*3*/",
 [[[n, a], ":-", [[[n, d], [[v, e]]]]], 
 [[n, comment], ["/*2*/"]], 
 [[n, comment], ["/*3*/"]]]
@@ -90,7 +92,9 @@ p2lp_test(9,"a/*2*/:-/*3*/d(E).",
 
 ).
 
-p2lp_test(10,"a(/*1*/B,C)/*2*/->d(E).",
+p2lp_test(10,"a(B,C)-->d(E).
+/*1*/
+/*2*/",
 [
 [[n,a],[[v,b],[v,c]],"->",
 [
@@ -101,7 +105,9 @@ p2lp_test(10,"a(/*1*/B,C)/*2*/->d(E).",
 ]
 ).
 
-p2lp_test(11,"a/*2*/:-/*3*/d(E).",
+p2lp_test(11,"a:-d(E).
+/*2*/
+/*3*/",
 [
 [[n,a],":-",
 [
@@ -112,7 +118,9 @@ p2lp_test(11,"a/*2*/:-/*3*/d(E).",
 ]
 ).
 
-p2lp_test(12,"a/*2*/->/*3*/d(E).",
+p2lp_test(12,"a-->d(E).
+/*2*/
+/*3*/",
 [
 [[n,a],"->",
 [
@@ -123,7 +131,7 @@ p2lp_test(12,"a/*2*/->/*3*/d(E).",
 ]
 ).
 
-p2lp_test(13,"a->a.",
+p2lp_test(13,"a-->a.",
 [
 [[n,a],"->",
 [
@@ -132,7 +140,9 @@ p2lp_test(13,"a->a.",
 ]
 ).
 
-p2lp_test(14,"a/*2*/-->/*3*/d(E).",
+p2lp_test(14,"a-->d(E).
+/*2*/
+/*3*/",
 [
 [[n,a],"->",
 [
@@ -152,7 +162,8 @@ p2lp_test(15,"a:-b([A,B],1,[C]).",
 ]
 ).
 
-p2lp_test(16,"a./*1*/",
+p2lp_test(16,"a.
+/*1*/",
 [
 [[n,a]],
 [[n,comment],["/*1*/"]]
@@ -168,21 +179,18 @@ p2lp_test(17,"b:-c.",
 ]
 ).
 
-p2lp_test(18,"a:-b,
+p2lp_test(18,"a:-b,c,d.
 /*1*/
-c,
-%2
-d.
-",
+%2",
 [
 [[n,a],":-",
 [
 	[[n,b]],
-	[[n,comment],["/*1*/"]],
 	[[n,c]],
-	[[n,comment],["%2"]],
 	[[n,d]]
-]]
+]],
+[[n,comment],["/*1*/"]],
+[[n,comment],["%2"]]
 ]
 ).
 
@@ -317,7 +325,7 @@ p2lp_test(36,"a(\"dsf\").",
 ]
 ).
 
-p2lp_test(37,"a('dd').",
+p2lp_test(37,"a(dd).",
 [
 [[n,a],['dd']]
 ]
@@ -446,7 +454,7 @@ p2lp_test(45,"ef(G):-(h(I)->true),!.",
 ]
 ).
 
-p2lp_test(46,"compound21(T,U)->item(I).",
+p2lp_test(46,"compound21(T,U)-->item(I).",
 [
 [[n,compound21],[[v,t],[v,u]],"->",
 [
@@ -455,7 +463,7 @@ p2lp_test(46,"compound21(T,U)->item(I).",
 ]
 ).
 
-p2lp_test(47,"compound21(T,U)->item(I),!.",
+p2lp_test(47,"compound21(T,U)-->item(I),!.",
 [
 [[n,compound21],[[v,t],[v,u]],"->",
 [
@@ -477,7 +485,7 @@ p2lp_test(49,"a(A).",
 ]
 ).
 
-p2lp_test(50,"compound21(T,U)->{wrap(I,Itemname1)}.",
+p2lp_test(50,"compound21(T,U)-->{wrap(I,Itemname1)}.",
 [
 [[n,compound21],[[v,t],[v,u]],"->",
 [
@@ -486,7 +494,7 @@ p2lp_test(50,"compound21(T,U)->{wrap(I,Itemname1)}.",
 ]
 ).
 
-p2lp_test(51,"compound21(T,U)->{wrap(I,Itemname1),append(T,Itemname1,V)}.",
+p2lp_test(51,"compound21(T,U)-->{wrap(I,Itemname1),append(T,Itemname1,V)}.",
 [
 [[n,compound21],[[v,t],[v,u]],"->",
 [
@@ -495,7 +503,7 @@ p2lp_test(51,"compound21(T,U)->{wrap(I,Itemname1),append(T,Itemname1,V)}.",
 ]
 ).
 
-p2lp_test(52,"compound21(T,U)->item(I),lookahead(\"]\"),{wrap(I,Itemname1),append(T,Itemname1,V)},compound212(V,U).",
+p2lp_test(52,"compound21(T,U)-->item(I),lookahead(\"]\"),{wrap(I,Itemname1),append(T,Itemname1,V)},compound212(V,U).",
 [
 [[n,compound21],[[v,t],[v,u]],"->",
 [
