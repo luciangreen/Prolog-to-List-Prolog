@@ -40,18 +40,18 @@ p2lpconverter([string,String],List3) :-
 	%File1="test1.pl",
 	string_codes(String,String1),
 	(phrase(file(List3),String1)->true;%(writeln(Error),
-	fail).
+	fail),!.
 
 p2lpconverter([file,File1],List3) :-
 	turn_keep_comments_on,
 	%File1="test1.pl",
-	readfile(File1,"test1.pl file read error.",List3).
+	readfile(File1,"test1.pl file read error.",List3),!.
 
 
 p2lpconverter(List3) :-
 	turn_keep_comments_on,
 	File1="test1.pl",	
-	readfile(File1,"test1.pl file read error.",List3).
+	readfile(File1,"test1.pl file read error.",List3),!.
 
 readfile(List1,_Error,List3) :-
 	%init_keep_comments,
