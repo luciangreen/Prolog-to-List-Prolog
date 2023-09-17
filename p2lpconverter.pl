@@ -128,10 +128,10 @@ predicate(A) -->
 predicate(A2) -->
 		name1(Word11),
 		"(",newlines1(N1),varnames(Varnames),")",
-		newlines1(N2),":-",%newlines1(N3),%{trace},
+		newlines1(N2),":-",newlines1(N3),%{trace},
 		lines(L), ".",
 		{foldr(append,[[[[n,Word11],Varnames,":-",%N,
-		L]],N1,N2%,N3
+		L]],N1,N2,N3
 		],A2)
 		%delete(A,[],A2)
 		}.
