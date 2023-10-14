@@ -4,7 +4,7 @@
 
 % For nested if-then, findall
 
-:-include('../List-Prolog-to-Prolog-Converter/lp2pconverter.pl').
+%:-include('../List-Prolog-to-Prolog-Converter/lp2pconverter.pl').
 
 pretty_print_lp2p(List,String) :-
 	(pp_lp2p0(List,String)->true;

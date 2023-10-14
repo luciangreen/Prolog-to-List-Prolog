@@ -1,5 +1,6 @@
 :-include('../listprologinterpreter/la_strings.pl').
 :-include('pretty_print.pl').
+:-include('pretty_print_lp2p.pl').
 :-include('p2lpverify.pl').
 
 %% p2lpconverter(S1),pp0(S1,S2),writeln(S2).
