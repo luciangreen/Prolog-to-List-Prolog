@@ -640,10 +640,12 @@ comments3(_) --> spaces1(_),name1(_).%%[X], [Y], {string_codes(X1,[X]),
 	%%string_codes(Y1,[Y]), not((X1="*",Y1="/"))}.
 
 **/
-
+comma_or_semicolon --> ",".
+comma_or_semicolon --> ";"%,{trace}
+.
 
 lines(Ls2) --> %{trace},%newlines1(_),
-newlines1(_),line(L),newlines1(N1),",",
+newlines1(_),line(L),newlines1(N1),comma_or_semicolon,%",",
 newlines1(N2),
 %{writeln(L)}, %%***
 lines(Ls), %trace,
@@ -670,6 +672,13 @@ line(A) -->%{trace},
 		varname_or_names(Varnames2),%newlines1(_),
 		{A=[[n,equals4],[Varnames1,Varnames2]]
 		}.
+/*
+line(A) -->%{trace},
+		"true",%newlines1(_),
+		{trace},
+		{A=[[n,true]]
+		}.
+*/
 
 line(A) --> %%spaces1(_), 
 		name1(Word11), %% name(A,B,C)
@@ -871,15 +880,15 @@ line(Word1) -->
 line(Word1) -->
 		"(",newlines1(_),line(Word2),")",{Word1=[Word2]},!.
 line(Word1) -->%{trace},
-		"(",newlines1(_),line(Word2),"->",newlines1(_),
-		line(Word3),";",newlines1(_N2),
-		line(Word4),")",
+		"(",newlines1(_),line(Word2),newlines1(_),"->",newlines1(_),
+		line(Word3),newlines1(_),";",newlines1(_N2),
+		line(Word4),newlines1(_N3),")",
 		{%(Word4=[[[[n,_]|_]|_]|_]->Word4=[Word41];Word4=Word41),
 		%if_one_item_then_remove_brackets()
 		Word1=[[n,"->"],[Word2,Word3,Word4]]},!.
 line(Word1) -->
 		"(",newlines1(_),
-		line(Word2),"->",newlines1(_N2),line(Word3),")",
+		line(Word2),newlines1(_N21),"->",newlines1(_N2),line(Word3),newlines1(_N3),")",
 		{Word1=[[n,"->"],[Word2,Word3]]},!.
 line(Word1) -->
 		"(",newlines1(_),
