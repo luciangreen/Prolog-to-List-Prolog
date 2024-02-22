@@ -4,6 +4,8 @@
 
 % For nested if-then, findall
 
+:-dynamic pp_separate_comma/1.
+
 pretty_print(List,String) :-
 	(pp0(List,String)->true;
 	pp_1(List,String)).
@@ -11,8 +13,24 @@ pretty_print(List,String) :-
 symbol_1(":-","\":-\"").
 symbol_1("->","\"->\"").
 
+pp0_2(A,B) :- 
+ retractall(pp_separate_comma(_)),
+ assertz(pp_separate_comma("\n")),
+ pp0(A,B),!.
+
+pp0_3(A,B) :- 
+ retractall(pp_separate_comma(_)),
+ assertz(pp_separate_comma("")),
+ pp0(A,B),!.
+
 pp0([],'[]') :- !.
 pp0(List,String2) :-
+%trace,
+ pp_separate_comma(PSC),
+ (var(PSC)->
+ (retractall(pp_separate_comma(_)),
+ assertz(pp_separate_comma("")));true),
+
 %trace,
 	pp1(List,'',String1),
 	concat_list(['[\n',String1],String5),
@@ -45,9 +63,11 @@ pp2(List1,S1,S2,N) :-
 	%pp2(Lists3,'',S3,N),
 	term_to_atom(V1,V11),
 	term_to_atom(V2,V21),
+
+ pp_separate_comma(PSC),
 	concat_list([S1,'\n',Ts,'[[n,findall]',',','\n',Ts,'[',
-	'\n',Ts2,V11,',','\n',
-	 S4,',',%'\n',Ts,
+	'\n',Ts2,V11,PSC,',','\n',
+	 S4,PSC,',',%'\n',Ts,
 	 '\n',
 	'\n',Ts2,V21,
 	 '\n',%Ts,'],[',
@@ -63,7 +83,7 @@ pp2(List1,S1,S2,N) :-
 	concat_list(Ts1,Ts),
 	%pp2(Lists3,'',S3,N),
 	concat_list([S1,'\n',Ts,'[[n,"->"]',',','\n',Ts,'[',
-	 S4,',',%'\n',Ts,
+	 S4,PSC,',',%'\n',Ts,
 	 '\n',%Ts,'],[',
 	 S5,'\n',Ts,']]'],S2));
 
@@ -79,9 +99,9 @@ pp2(List1,S1,S2,N) :-
 	concat_list(Ts1,Ts),
 	%pp2(Lists3,'',S3,N),
 	concat_list([S1,'\n',Ts,'[[n,"->"]',',','\n',Ts,'[',
-	 S4,',',%'\n',Ts,
+	 S4,PSC,',',%'\n',Ts,
 	 '\n',%Ts,'],[',
-	 S5,',',%'\n',Ts,
+	 S5,PSC,',',%'\n',Ts,
 	 '\n',%Ts,'],[',
 	 S51,'\n',Ts,']]'],S2));
 	%concat_list([S1,'\n',Ts,S4,',','\n',Ts,S5,',','\n',Ts,S51],S2));
@@ -124,13 +144,13 @@ pp2(List1,S1,S2,N) :-
 	term_to_atom(V2,V21),
 	pp2(Lists3,'',S3,N),
 	concat_list([S1,'\n',Ts,'[[n,findall]',',','\n',Ts,'[',
-	'\n',Ts2,V11,',','\n',
-	 S4,',',%'\n',Ts,
+	'\n',Ts2,V11,PSC,',','\n',
+	 S4,PSC,',',%'\n',Ts,
 	 '\n',
 	'\n',Ts2,V21,
 	 '\n',%Ts,'],[',
 	 %S5,
-	 Ts,']]',',',S3],S2));
+	 Ts,']]',PSC,',',S3],S2));
 
 	(List2=[[n,"->"],[If,Then]]-> % if then else
 	(N2 is N+1,
@@ -141,9 +161,9 @@ pp2(List1,S1,S2,N) :-
 	concat_list(Ts1,Ts),
 	pp2(Lists3,'',S3,N),
 	concat_list([S1,'\n',Ts,'[[n,"->"]',',','\n',Ts,'[',
-	 S4,',',%'\n',Ts,
+	 S4,PSC,',',%'\n',Ts,
 	 '\n',%Ts,'],[',
-	 S5,'\n',Ts,']]',',',S3],S2));
+	 S5,'\n',Ts,']]',PSC,',',S3],S2));
 	%concat_list([S1,'\n',Ts,S4,',','\n',Ts,S5,',',S3],S2));
 	
 	(List2=[[n,"->"],[If,Then,Else]]-> % if then else
@@ -156,11 +176,11 @@ pp2(List1,S1,S2,N) :-
 	concat_list(Ts1,Ts),
 	pp2(Lists3,'',S3,N),
 	concat_list([S1,'\n',Ts,'[[n,"->"]',',','\n',Ts,'[',
-	 S4,',',%'\n',Ts,
+	 S4,PSC,',',%'\n',Ts,
 	 '\n',%Ts,'],[',
-	 S5,',',%'\n',Ts,
+	 S5,PSC,',',%'\n',Ts,
 	 '\n',%Ts,'],[',
-	 S51,'\n',Ts,']]',',',S3],S2));
+	 S51,'\n',Ts,']]',PSC,',',S3],S2));
 	%concat_list([S1,'\n',Ts,S4,',','\n',Ts,S5,',','\n',Ts,S51,',',S3],S2));
 	(%pp2(List2,'',List2a,N),
 	%trace,
@@ -182,7 +202,7 @@ pp2(List1,S1,S2,N) :-
 	concat_list([S1,%'\n',Ts,
 	'\n',Ts,'[',
 	List2a,
-	'\n',Ts,']',
+	'\n',Ts,']',PSC,
 	',',S3
 	],S2))))),
 	%concat_list([S1,%'\n',Ts,
@@ -204,12 +224,13 @@ pp_1(List,String) :-
 	atom_string(Atom,String).
 
 pp3(List1,S1,S3) :-
+	pp_separate_comma(PSC),
 	symbol_1(Symbol,Symbol1),
 	List1=List2,
 	(((List2=[[_N10,_Name]]->true;List2=[[_N10,_Name],
 		_Variables]),
 	term_to_atom(List2,List2a),
-	concat_list([S1,List2a,',\n'],S3))->true;
+	concat_list([S1,List2a,PSC,',\n'],S3))->true;
 	
 	((List2=[":-",[_,_Word11],_Varnames%N,
 		]%,N3
@@ -217,20 +238,20 @@ pp3(List1,S1,S3) :-
 		]
 		),
 	term_to_atom(List2,List2a),
-	concat_list([S1,List2a,',\n'],S3))->true;
+	concat_list([S1,List2a,PSC,',\n'],S3))->true;
 	
 	((List2=[[N1,Name],Variables1,Symbol,Body]->
 	(term_to_atom(Variables1,Variables2),
 	concat_list([S1,'[[',N1,',',Name,'],',Variables2,
-	',',Symbol1,',\n['],String),
+	PSC,',',Symbol1,',\n[',PSC],String),
 	%trace,
 	pp2(Body,'',B1,1),
 	%string_concat(B1,",",B11),
-	concat_list([String,B1,'\n]],\n'],S3)))->true;
+	concat_list([String,B1,'\n]]',PSC,',\n'],S3)))->true;
 	List2=[[N1,Name],Symbol,Body]->
 	(%term_to_atom(Variables1,Variables2),
-	concat_list([S1,'[[',N1,',',Name,'],',Symbol1,',\n['],String),
+	concat_list([S1,'[[',N1,',',Name,']',PSC,',',Symbol1,',\n[',PSC],String),
 	%trace,
 	pp2(Body,'',B1,1),
 	%string_concat(B1,",",B11),
-	concat_list([String,B1,'\n]],\n'],S3)))),!.
+	concat_list([String,B1,'\n]]',PSC,',\n'],S3)))),!.
