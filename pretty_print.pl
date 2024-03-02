@@ -49,6 +49,7 @@ pp1(List1,S1,S2) :-
 		pp1(Lists3,S3,S2),!.
 pp2([],S,S,_N):-!.
 pp2(List1,S1,S2,N) :-
+	pp_separate_comma(PSC),
 	List1=[List2],
 	
 	(List2=[[n,findall],[V1,Body,V2]]-> % if then else
@@ -64,7 +65,6 @@ pp2(List1,S1,S2,N) :-
 	term_to_atom(V1,V11),
 	term_to_atom(V2,V21),
 
- pp_separate_comma(PSC),
 	concat_list([S1,'\n',Ts,'[[n,findall]',',','\n',Ts,'[',
 	'\n',Ts2,V11,PSC,',','\n',
 	 S4,PSC,',',%'\n',Ts,
@@ -127,6 +127,7 @@ pp2(List1,S1,S2,N) :-
 	],S2))))),
 	!.
 pp2(List1,S1,S2,N) :-
+	pp_separate_comma(PSC),
 	List1=[List2|Lists3],
 	%write("\t"),write(List2),writeln(","),
 
