@@ -26,10 +26,10 @@ pp0_3(A,B) :-
 pp0([],'[]') :- !.
 pp0(List,String2) :-
 %trace,
- pp_separate_comma(PSC),
- (var(PSC)->
- (retractall(pp_separate_comma(_)),
- assertz(pp_separate_comma("")));true),
+ ((pp_separate_comma(PSC),
+ not(var(PSC)))->
+ true;(retractall(pp_separate_comma(_)),
+ assertz(pp_separate_comma("")))),
 
 %trace,
 	pp1(List,'',String1),
