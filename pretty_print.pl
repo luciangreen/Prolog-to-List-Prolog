@@ -23,13 +23,19 @@ pp0_3(A,B) :-
  assertz(pp_separate_comma("")),
  pp0(A,B),!.
 
-pp0([],'[]') :- !.
-pp0(List,String2) :-
-%trace,
- ((pp_separate_comma(PSC),
- not(var(PSC)))->
+pp0(A,B) :-
+%/*
+ ((pp_separate_comma(PSC)
+ %not(var(PSC))
+ )->
  true;(retractall(pp_separate_comma(_)),
  assertz(pp_separate_comma("")))),
+ %*/
+ pp01(A,B).
+ 
+pp01([],'[]') :- !.
+pp01(List,String2) :-
+%trace,
 
 %trace,
 	pp1(List,'',String1),
