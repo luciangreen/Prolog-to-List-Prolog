@@ -248,14 +248,14 @@ name1010(XXs) --> [X], [Y],
 	{atom_concat_list([CA2,CA22,''],XXs)}, !. 
 
 name1010(XXs) --> [X],
-{char_code(Ch1,X),char_type(X,ascii),%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
+{char_code(Ch1,X),%char_type(X,ascii),%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
 	%Ch1='!'->true;Ch1='.')))),
 	not(Ch1='\''),%not(Ch1='('),
 	atom_string(CA2,Ch1)},%%downcase_atom(CA,CA2)},
 	name1010(Xs), 
 	{atom_concat(CA2,Xs,XXs)}, !. 
 name1010(XXs) --> [X], 
-	{char_code(Ch1,X),char_type(X,ascii),%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
+	{char_code(Ch1,X),%char_type(X,ascii),%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
 	%Ch1='!'->true;Ch1='.')))),
 	not(Ch1='\''),%not(Ch1='('),
 	atom_string(CA2,Ch1)},%%downcase_atom(CA,CA2)},
@@ -293,14 +293,14 @@ name1011(XXs) --> [X], [Y],
 	{atom_concat_list([CA2,CA22,''],XXs)}, !. 
 
 name1011(XXs) --> [X], 
-	{char_code(Ch1,X),char_type(X,ascii),%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
+	{char_code(Ch1,X),%char_type(X,ascii),%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
 	%Ch1='!'->true;Ch1='.')))),
 	not(Ch1='"'),%not(Ch1='('),
 	atom_string(CA2,Ch1)},%%downcase_atom(CA,CA2)},
 	name1011(Xs), 
 	{atom_concat(CA2,Xs,XXs)}, !. 
 name1011(XXs) --> [X], 
-	{char_code(Ch1,X),char_type(X,ascii),%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
+	{char_code(Ch1,X),%char_type(X,ascii),%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
 	%Ch1='!'->true;Ch1='.')))),
 	not(Ch1='"'),%not(Ch1='('),
 	atom_string(CA2,Ch1)},%%downcase_atom(CA,CA2)},
@@ -316,7 +316,7 @@ name1012(XXs) -->
 	[X],
 	lookahead2([',',')',']','|'
 		]),
-	{char_code(Ch1,X),char_type(X,ascii),
+	{char_code(Ch1,X),%char_type(X,ascii),
 	%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
 	%Ch1='!'->true;Ch1='.')))),
 	not(Ch1='['),not(Ch1=']'),not(Ch1='('),
@@ -331,7 +331,7 @@ name1012(XXs) --> %{trace},
 	%{trace},
 	%lookahead3(A),
 	{%char_code(ChA,A),not(ChA=','),not(ChA=')'),
-	char_code(Ch1,X),char_type(X,ascii),
+	char_code(Ch1,X),%char_type(X,ascii),
 	%->true;(Ch1='\''->true;(Ch1='"'->true;(Ch1='_'->true;
 	%Ch1='!'->true;Ch1='.')))),
 	%not(Ch1=','),
