@@ -25,7 +25,7 @@ pp0_3(A,B) :-
 
 pp0(A,B) :-
 %/*
- ((pp_separate_comma(PSC)
+ ((pp_separate_comma(_PSC)
  %not(var(PSC))
  )->
  true;(retractall(pp_separate_comma(_)),
