@@ -1,4 +1,4 @@
-:-include('../listprologinterpreter/la_strings.pl').
+:-include('../listprologinterpreter/listprolog.pl').
 :-include('pretty_print.pl').
 :-include('pretty_print_lp2p.pl').
 :-include('p2lpverify.pl').
@@ -15,7 +15,7 @@ string_codes("a.\nb(C,D).\nef('A'):-(h(a)->true;true),!.",A),phrase(file(B),A),w
 use_module(library(pio)).
 use_module(library(dcg/basics)).
 
-:- include('la_strings.pl').
+%:- include('la_strings.pl').
 
 :-dynamic keep_comments/1.
 
@@ -35,21 +35,28 @@ turn_keep_comments_off :-
 	retractall(keep_comments(_)),
  	assertz(keep_comments([])),!.
 
+p2lpconverter(A,B) :-
+	catch(call_with_time_limit(0.1,
+	p2lpconverter1(A,B)),_,false),!.
 
-p2lpconverter([string,String],List3) :-
+p2lpconverter(A) :-
+	catch(call_with_time_limit(0.1,
+	p2lpconverter1(A)),_,false),!.
+
+p2lpconverter1([string,String],List3) :-
 	turn_keep_comments_on,
 	%File1="test1.pl",
 	string_codes(String,String1),
 	(phrase(file(List3),String1)->true;%(writeln(Error),
 	fail),!.
 
-p2lpconverter([file,File1],List3) :-
+p2lpconverter1([file,File1],List3) :-
 	turn_keep_comments_on,
 	%File1="test1.pl",
 	readfile(File1,"test1.pl file read error.",List3),!.
 
 
-p2lpconverter(List3) :-
+p2lpconverter1(List3) :-
 	turn_keep_comments_on,
 	File1="test1.pl",	
 	readfile(File1,"test1.pl file read error.",List3),!.
@@ -68,8 +75,16 @@ list([L|Ls]) --> [L], list(Ls).
 
 %file(N) --> newlines1(N),!.
 
-file(Ls2) --> newlines1(N0),file2(N0,Ls2).
+file(Ls2) --> newlines1(N0),file2([],Ls3),
+ {foldr(append,[
+ N0,
+ Ls3
+ %Ls,
+ %N0,N1
+ ],Ls2)}.
+file(N0) --> newlines1(N0).
 %file2([],[]) --> [].
+
 file2(N0,Ls2) --> %newlines1(N1),
 predicate(L),%
 newlines1(N1),
@@ -78,21 +93,24 @@ newlines1(N1),
 %file2(N1,Ls),
 %{writeln1(L)}, %%***
  {foldr(append,[
- L,
+ N0,N1,L
  %Ls,
- N0,N1],Ls2)}
+ ],Ls2)}
  %delete(Ls3,[],Ls2)},
  . 
 file2(N0,Ls2) --> %newlines1(N1),
 predicate(L),%
 newlines1(N1),
+
+%newlines1(N11),
 	%{trace},
-{writeln1(L)},
+%{writeln1(L)},
 file2(N1,Ls),
 %{writeln1(L)}, %%***
  {foldr(append,[
  L,
- Ls,N0],Ls2)}
+ Ls,N0%,N1%,N11
+ ],Ls2)}
  %delete(Ls3,[],Ls2)},
 . 
 file2(N0,Ls2) --> newlines1(Ls2),!.
@@ -108,6 +126,7 @@ file(Ls2) --> newlines1(N),file(Ls),
 !.
 */
 %%predicate([]) --> newlines1(_).
+%predicate_test([]) --> "a",".".
 
 predicate(A) -->
 		":-",newlines1(_),name1(Word11),
@@ -1039,13 +1058,13 @@ string_atom2(String1,Atom1) :-
  atom_string(Atom2,String1),
 	
 	%string_atom(String1,String2),
-	%replace(String2,"'","#",String1),
+	%replace_p2lp(String2,"'","#",String1),
 	%string_atom(String1,String2),
 	!.
 string_atom2(String1,Atom1) :-
 	atom(Atom1),%String1=Atom1,
 	%trace,
-	%replace(Atom1,"\"","&",String2),
+	%replace_p2lp(Atom1,"\"","&",String2),
 	delete1_p2lp(Atom1,"'",%"#",
 	String3),
 
@@ -1057,7 +1076,7 @@ string_atom2(String1,Atom1) :-
 	string_atom(String3,String1),
 	!.
 	
-replace(A1,Find,Replace,F) :-
+replace_p2lp(A1,Find,Replace,F) :-
 string_concat("%",A1,A2),
 string_concat(A2,"%",A),		split_string(A,Find,Find,B),findall([C,Replace],(member(C,B)),D),maplist(append,[D],[E]),concat_list(E,F1),string_concat(F2,G,F1),string_length(G,1),
 	string_concat("%",F3,F2),	
