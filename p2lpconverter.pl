@@ -1,4 +1,4 @@
-:-include('../listprologinterpreter/listprolog.pl').
+:-include('../listprologinterpreter/la_strings.pl').
 :-include('pretty_print.pl').
 :-include('pretty_print_lp2p.pl').
 :-include('p2lpverify.pl').
@@ -15,7 +15,7 @@ string_codes("a.\nb(C,D).\nef('A'):-(h(a)->true;true),!.",A),phrase(file(B),A),w
 use_module(library(pio)).
 use_module(library(dcg/basics)).
 
-%:- include('la_strings.pl').
+:- include('la_strings.pl').
 
 :-dynamic keep_comments/1.
 
@@ -35,28 +35,21 @@ turn_keep_comments_off :-
 	retractall(keep_comments(_)),
  	assertz(keep_comments([])),!.
 
-p2lpconverter(A,B) :-
-	catch(call_with_time_limit(1,%0.1,
-	p2lpconverter1(A,B)),_,false),!.
 
-p2lpconverter(A) :-
-	catch(call_with_time_limit(1,%0.1,
-	p2lpconverter1(A)),_,false),!.
-
-p2lpconverter1([string,String],List3) :-
+p2lpconverter([string,String],List3) :-
 	turn_keep_comments_on,
 	%File1="test1.pl",
 	string_codes(String,String1),
 	(phrase(file(List3),String1)->true;%(writeln(Error),
 	fail),!.
 
-p2lpconverter1([file,File1],List3) :-
+p2lpconverter([file,File1],List3) :-
 	turn_keep_comments_on,
 	%File1="test1.pl",
 	readfile(File1,"test1.pl file read error.",List3),!.
 
 
-p2lpconverter1(List3) :-
+p2lpconverter(List3) :-
 	turn_keep_comments_on,
 	File1="test1.pl",	
 	readfile(File1,"test1.pl file read error.",List3),!.
@@ -75,45 +68,17 @@ list([L|Ls]) --> [L], list(Ls).
 
 %file(N) --> newlines1(N),!.
 
-file(Ls2) --> newlines1(N0),file2([],Ls3),
- {foldr(append,[
- Ls3,N0
- %Ls,
- %N0,N1
- ],Ls2)}.
-file(N0) --> newlines1(N0).
-%file2([],[]) --> [].
-
-file2(N0,Ls2) --> %newlines1(N1),
-predicate(L),%
-newlines1(N1),
-	%{trace},
+file(Ls2) --> newlines1(N1),predicate(L),newlines1(N2),
 %{writeln1(L)},
-%file2(N1,Ls),
+file(Ls),
 %{writeln1(L)}, %%***
- {foldr(append,[
- L,N0,N1
- %Ls,
- ],Ls2)}
+ {foldr(append,[N1,
+ L,N2,
+ Ls],Ls2)},
  %delete(Ls3,[],Ls2)},
- . 
-file2(N0,Ls2) --> %newlines1(N1),
-predicate(L),%
-newlines1(N1),
-
-%newlines1(N11),
-	%{trace},
-%{writeln1(L)},
-file2(N1,Ls),
-%{writeln1(L)}, %%***
- {foldr(append,[
- L,
- Ls,N0%,N1%,N11
- ],Ls2)}
- %delete(Ls3,[],Ls2)},
-. 
-file2(N0,Ls2) --> newlines1(Ls2),!.
-%file2(N,N) --> [],!.
+ !. 
+file(Ls2) --> newlines1(Ls2),!.
+file([]) --> [],!.
 
 /*
 file(Ls2) --> newlines1(N),file(Ls),
@@ -125,124 +90,104 @@ file(Ls2) --> newlines1(N),file(Ls),
 !.
 */
 %%predicate([]) --> newlines1(_).
-%predicate_test([]) --> "a",".".
 
-predicate(A) -->
+predicate(A2) -->
 		":-",newlines1(_),name1(Word11),
 		"(",newlines1(N1),varnames(Varnames),")",
-		newlines1(N2),
+		newlines1(N2),%":-",%newlines1(N3),%{trace},
+		%lines(L),
 		 ".",
-		{foldr(append,[[[":-",[n,Word11],Varnames
-		]],N1,N2
-		],A)
-		}.
-predicate(A) -->
-		":-",newlines1(_),name1(Word11),
-		newlines1(N1),name1(Word13),
-		"/",newlines1(N2),name1(Word12),
-		newlines1(N3),
-		 ".",
-		{foldr(append,[[[":-",[n,Word11],[Word13,"/",Word12]
-		]],N1,N2,N3
-		],A)
-		}.
-
-predicate(A) -->
-		name1(Word11), predicate(Word11,A).
-predicate([]) --> [],!.
-
-%predicate(A) -->
-%		name1(Word11), predicate(Word11,A).
-		
-
-%predicate(A2) -->
-%		name1(Word11),predicate(Word11,A).
-
-%predicate(A2) -->
-%		name1(Word11),predicate(Word11,A).
-
-%predicate(A2) -->
-%		name1(Word11),predicate(Word11,A).
-predicate(Word11,A) -->
-	 	newlines1(N1),predicate2(N1,Word11,A).
-
-predicate(Word11,A) -->		"(",newlines1(N1),varnames(Varnames),newlines1(N2),
-		")",predicate(N1,N2,Word11,Varnames,A).
-predicate(%N1,
-Word11,A) -->		
-		".", %{A=[[[n,Word11]]]
-		%}
-		{foldr(append,[[[[n,Word11]]],N1
-		],A)
-		}.		
-
-predicate2(N1,Word11,A) -->		
-		"-->",newlines1(N2),
-		lines(L), ".",
-		{foldr(append,[[[[n,Word11],"->",%N,
-		L]],N1,N2],A)
-		}.
-
-%predicate(Word11,A) -->		
-%		newlines1(N1),predicate2(Word11,A).
-predicate2(N1,Word11,A) -->		
-		":-",newlines1(N2),%{trace},
-		lines(L), ".",
-		{foldr(append,[[[[n,Word11],":-",%N,
-		L]],N1,N2],A)
-		}.		
-%predicate(Word11,A) -->		
-%		newlines1(N1),predicate2(Word11,A).
-predicate2(N1,Word11,A) -->		
-		"->",newlines1(N2),
-		lines(L), ".",
-		{foldr(append,[[[[n,Word11],"->",%N,
-		L]],N1,N2],A)
-		}.
-
-predicate(N1,N2,Word11,Varnames,A) -->		
-		".", {foldr(append,[[[[n,Word11],Varnames]],N1,N2],A)
-		}.
-predicate(N1,N2,Word11,Varnames,A) -->
-	newlines1(N3),predicate3(N1,N2,N3,Word11,Varnames,A).		
-/*
-predicate(A2) -->
-		name1(Word11),
-		"(",newlines1(N1),varnames(Varnames),")",*/
-predicate3(N1,N2,N3,Word11,Varnames,A) -->
-		":-",newlines1(N4),%{trace},
-		lines(L), ".",
-		{foldr(append,[[[[n,Word11],Varnames,":-",%N,
-		L]],N1,N2,N3,N4
-		],A)
+		{foldr(append,[[[":-",[n,Word11],Varnames%N,
+		]],N1,N2%,N3
+		],A2)
 		%delete(A,[],A2)
 		}.
-%predicate(Word11,Varnames,A) -->		
+predicate(A2) -->
+		":-",newlines1(_),name1(Word11),
+		%"(",
+		newlines1(N1),name1(Word13),%varnames(Varnames),newlines1(_),
+		"/",newlines1(_),name1(Word12),%")",
+		newlines1(N2),%":-",%newlines1(N3),%{trace},
+		%lines(L),
+		 ".",
+		{foldr(append,[[[":-",[n,Word11],[Word13,"/",Word12]%,Varnames%N,
+		]],N1,N2%,N3
+		],A2)
+		%delete(A,[],A2)
+		}.
 
-/*predicate(A2) -->
+predicate(A) -->
+		name1(Word11), 
+		".", {A=[[[n,Word11]]]
+		}.
+predicate(A) -->
+		name1(Word11), 
+		"(",newlines1(N1),varnames(Varnames),%,newlines1(N2),
+		")",
+		".", {foldr(append,[[[[n,Word11],Varnames]],N1],A)
+		}.
+predicate(A2) -->
 		name1(Word11),
-		"(",newlines1(N1),varnames(Varnames),")",*/
-predicate3(N1,N2,N3,Word11,Varnames,A) -->
-		"->",newlines1(N4),
+		"(",newlines1(N1),varnames(Varnames),")",
+		newlines1(N2),":-",newlines1(N3),%{trace},
+		lines(L), ".",
+		{foldr(append,[[[[n,Word11],Varnames,":-",%N,
+		L]],N1,N2,N3
+		],A2)
+		%delete(A,[],A2)
+		}.
+predicate(A2) -->
+		name1(Word11),
+		"(",newlines1(N1),varnames(Varnames),")",
+		newlines1(N2),"->",newlines1(N3),
 		lines(L), ".",
 		{foldr(append,[[[[n,Word11],Varnames,"->",
-		L]],N1,N2,N3,N4],A)
+		L]],N1,N2,N3],A2)
 				%delete(A,[],A2)
 
 		}.
-%predicate(Word11,Varnames,A) -->		
-/*predicate(A2) -->
+predicate(A2) -->
 		name1(Word11),
-		"(",newlines1(N1),varnames(Varnames),")",*/
-predicate3(N1,N2,N3,Word11,Varnames,A) -->
-		"-->",newlines1(N4),
+		"(",newlines1(N1),varnames(Varnames),")",
+		newlines1(N2),"-->",newlines1(N3),
 		lines(L), ".",
 		{foldr(append,[[[[n,Word11],Varnames,"->",%N,
-		L]],N1,N2,N3,N4],A)
+		L]],N1,N2,N3],A2)
 				%delete(A,[],A2)
 
 		}.
-		/**name1([L3|Xs]) --> [X], {string_codes(L2,[X]),(char_type(X,alnum)->true;L2="_"),downcase_atom(L2,L3)}, name1(Xs), !.
+predicate(A2) -->
+		name1(Word11),
+		newlines1(N1),":-",newlines1(N2),%{trace},
+		lines(L), ".",
+		{foldr(append,[[[[n,Word11],":-",%N,
+		L]],N1,N2],A2)
+		
+						%delete(A,[],A2)
+
+		}.
+predicate(A2) -->
+		name1(Word11),
+		newlines1(N1),"->",newlines1(N2),
+		lines(L), ".",
+		{foldr(append,[[[[n,Word11],"->",%N,
+		L]],N1,N2],A2)
+		
+								%delete(A,[],A2)
+
+		}.
+predicate(A2) -->
+		name1(Word11),
+		newlines1(N1),"-->",newlines1(N2),
+		lines(L), ".",
+		{foldr(append,[[[[n,Word11],"->",%N,
+		L]],N1,N2],A2)
+		
+								%delete(A,[],A2)
+
+		}.
+		
+/**name1([L3|Xs]) --> [X], {string_codes(L2,[X]),(char_type(X,alnum)->true;L2="_"),downcase_atom(L2,L3)}, name1(Xs), !.
 name1([]) --> [].
 **/
 
@@ -501,8 +446,7 @@ newlines1(_),spaces1(_),varnames0(L2),
 	
 varnames(L3) --> %{trace},
 %"[",
-%newlines1(_),
-varnames0(L3),newlines1(_),%"]",
+newlines1(_),varnames0(L3),newlines1(_),%"]",
 %",",
 %newlines1(_),spaces1(_),varnames(L2),
 	%{append(L1,L2,L3)},
@@ -701,8 +645,7 @@ comma_or_semicolon --> ";"%,{trace}
 .
 
 lines(Ls2) --> %{trace},%newlines1(_),
-%newlines1(_),
-line(L),newlines1(N1),comma_or_semicolon,%",",
+newlines1(_),line(L),newlines1(N1),comma_or_semicolon,%",",
 newlines1(N2),
 %{writeln(L)}, %%***
 lines(Ls), %trace,
@@ -1057,13 +1000,13 @@ string_atom2(String1,Atom1) :-
  atom_string(Atom2,String1),
 	
 	%string_atom(String1,String2),
-	%replace_p2lp(String2,"'","#",String1),
+	%replace(String2,"'","#",String1),
 	%string_atom(String1,String2),
 	!.
 string_atom2(String1,Atom1) :-
 	atom(Atom1),%String1=Atom1,
 	%trace,
-	%replace_p2lp(Atom1,"\"","&",String2),
+	%replace(Atom1,"\"","&",String2),
 	delete1_p2lp(Atom1,"'",%"#",
 	String3),
 
@@ -1075,7 +1018,7 @@ string_atom2(String1,Atom1) :-
 	string_atom(String3,String1),
 	!.
 	
-replace_p2lp(A1,Find,Replace,F) :-
+replace(A1,Find,Replace,F) :-
 string_concat("%",A1,A2),
 string_concat(A2,"%",A),		split_string(A,Find,Find,B),findall([C,Replace],(member(C,B)),D),maplist(append,[D],[E]),concat_list(E,F1),string_concat(F2,G,F1),string_length(G,1),
 	string_concat("%",F3,F2),	
