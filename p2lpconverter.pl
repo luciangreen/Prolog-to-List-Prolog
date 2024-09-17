@@ -1,3 +1,4 @@
+:- initialization(load_files(['../listprologinterpreter/listprolog.pl'],[if(changed),if(not_loaded)])).
 :-include('../listprologinterpreter/la_strings.pl').
 :-include('pretty_print.pl').
 :-include('pretty_print_lp2p.pl').
@@ -36,20 +37,25 @@ turn_keep_comments_off :-
  	assertz(keep_comments([])),!.
 
 
-p2lpconverter([string,String],List3) :-
+p2lpconverter([A,B],C) :-
+	container(p2lpconverter1([A,B],C)),!.
+p2lpconverter(A) :-
+	container(p2lpconverter1(A)),!.
+
+p2lpconverter1([string,String],List3) :-
 	turn_keep_comments_on,
 	%File1="test1.pl",
 	string_codes(String,String1),
 	(phrase(file(List3),String1)->true;%(writeln(Error),
 	fail),!.
 
-p2lpconverter([file,File1],List3) :-
+p2lpconverter1([file,File1],List3) :-
 	turn_keep_comments_on,
 	%File1="test1.pl",
 	readfile(File1,"test1.pl file read error.",List3),!.
 
 
-p2lpconverter(List3) :-
+p2lpconverter1(List3) :-
 	turn_keep_comments_on,
 	File1="test1.pl",	
 	readfile(File1,"test1.pl file read error.",List3),!.
