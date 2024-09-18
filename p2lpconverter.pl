@@ -1,4 +1,4 @@
-:- initialization(load_files(['../listprologinterpreter/listprolog.pl'],[if(changed),if(not_loaded)])).
+:-include('../listprologinterpreter/listprolog.pl').
 :-include('../listprologinterpreter/la_strings.pl').
 :-include('pretty_print.pl').
 :-include('pretty_print_lp2p.pl').
@@ -16,7 +16,7 @@ string_codes("a.\nb(C,D).\nef('A'):-(h(a)->true;true),!.",A),phrase(file(B),A),w
 use_module(library(pio)).
 use_module(library(dcg/basics)).
 
-:- include('la_strings.pl').
+:-include('la_strings.pl').
 
 :-dynamic keep_comments/1.
 

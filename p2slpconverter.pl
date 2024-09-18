@@ -5,7 +5,7 @@
 use_module(library(pio)).
 use_module(library(dcg/basics)).
 
-:- include('la_strings.pl').
+:-include('la_strings.pl').
 
 p2slpconverter :-
 	File1="test1.pl",
