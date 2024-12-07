@@ -24,6 +24,8 @@ pp0_3(A,B) :-
  pp0(A,B),!.
 
 pp0(A,B) :-
+
+
 %/*
  ((pp_separate_comma(_PSC)
  %not(var(PSC))
@@ -31,7 +33,7 @@ pp0(A,B) :-
  true;(retractall(pp_separate_comma(_)),
  assertz(pp_separate_comma("")))),
  %*/
- pp01(A,B).
+ catch_true(pp01(A,B)).
  
 pp01([],'[]') :- !.
 pp01(List,String2) :-
@@ -119,7 +121,7 @@ pp2(List1,S1,S2,N) :-
 	length(Counter,N),
 	findall('\t',member(_,Counter),Ts1),
 	concat_list(Ts1,Ts),
-	concat_list([S1,'\n',Ts,List2a],S2));
+	concat_list([S1,'\n',Ts,List2a],S2))->true;
 	
 	(pp2(List2,'',List2a,N),
 	%term_to_atom(List2,List2a),
@@ -134,7 +136,11 @@ pp2(List1,S1,S2,N) :-
 	!.
 pp2(List1,S1,S2,N) :-
 	pp_separate_comma(PSC),
-	List1=[List2|Lists3],
+	(%catch_true
+	(catch_true(List1=[List2|Lists3])->true; % this needs clearing up at start and middle of luciancicd
+	(%false
+	catch_true((List1=List2,
+	Lists3=[])))),
 	%write("\t"),write(List2),writeln(","),
 
 	(List2=[[n,findall],[V1,Body,V2]]-> % if then else
@@ -191,8 +197,8 @@ pp2(List1,S1,S2,N) :-
 	%concat_list([S1,'\n',Ts,S4,',','\n',Ts,S5,',','\n',Ts,S51,',',S3],S2));
 	(%pp2(List2,'',List2a,N),
 	%trace,
-	List2=[[N_or_v,_]|_],(N_or_v=n->true;N_or_v=v),
-	pp2(Lists3,'',S3,N),
+	List2=[[N_or_v,_]|_],(N_or_v=n->true;N_or_v=v)->
+	(pp2(Lists3,'',S3,N),
 	term_to_atom(List2,List2a),
 	length(Counter,N),
 	findall('\t',member(_,Counter),Ts1),
@@ -211,7 +217,7 @@ pp2(List1,S1,S2,N) :-
 	List2a,
 	'\n',Ts,']',PSC,
 	',',S3
-	],S2))))),
+	],S2))))))),
 	%concat_list([S1,%'\n',Ts,
 	%List2a,',',S3],S2)))),
 
@@ -239,7 +245,7 @@ pp3(List1,S1,S3) :-
 	term_to_atom(List2,List2a),
 	concat_list([S1,List2a,PSC,',\n'],S3))->true;
 	
-	((List2=[":-",[_,_Word11],_Varnames%N,
+	(((List2=[":-",[_,_Word11],_Varnames%N,
 		]%,N3
 		;List2=[":-",[_,_Word11],[_Word13,"/",_Word12]%,Varnames%N,
 		]
@@ -247,18 +253,19 @@ pp3(List1,S1,S3) :-
 	term_to_atom(List2,List2a),
 	concat_list([S1,List2a,PSC,',\n'],S3))->true;
 	
-	((List2=[[N1,Name],Variables1,Symbol,Body]->
-	(term_to_atom(Variables1,Variables2),
+	(((%trace,
+	List2=[[N1,Name],Variables1,Symbol,Body],
+	term_to_atom(Variables1,Variables2),
 	concat_list([S1,'[[',N1,',',Name,'],',Variables2,
 	PSC,',',Symbol1,',\n[',PSC],String),
 	%trace,
 	pp2(Body,'',B1,1),
 	%string_concat(B1,",",B11),
 	concat_list([String,B1,'\n]]',PSC,',\n'],S3)))->true;
-	List2=[[N1,Name],Symbol,Body]->
-	(%term_to_atom(Variables1,Variables2),
+	((List2=[[N1,Name],Symbol,Body],
+	%term_to_atom(Variables1,Variables2),
 	concat_list([S1,'[[',N1,',',Name,']',PSC,',',Symbol1,',\n[',PSC],String),
 	%trace,
 	pp2(Body,'',B1,1),
 	%string_concat(B1,",",B11),
-	concat_list([String,B1,'\n]]',PSC,',\n'],S3)))),!.
+	concat_list([String,B1,'\n]]',PSC,',\n'],S3)))))),!.
