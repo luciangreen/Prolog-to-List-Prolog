@@ -1,4 +1,4 @@
-:-include('../listprologinterpreter/listprolog.pl').
+:-include('listprolog.pl').
 %:-include('../listprologinterpreter/la_strings.pl').
 %:-include('pretty_print.pl').
 %:-include('pretty_print_lp2p.pl').
