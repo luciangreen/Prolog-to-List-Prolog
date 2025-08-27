@@ -5,3 +5,4 @@
 %:-include('p2lpverify.pl').
 %:-include('la_strings.pl').
 :-include('p2lpconverter1.pl').
+:-include('luciancicd.pl').
