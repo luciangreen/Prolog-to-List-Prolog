@@ -6,7 +6,7 @@
 
 p2lp_test(NTotal,Score) :- p2lp_test(0,NTotal,0,Score),!.
 p2lp_test(NTotal,NTotal,Score,Score) :- 
- findall(_,p2lp_test(_,_,_),Ns),length(Ns,NL),NL=NTotal, !.
+ findall(A,(p2lp_test(B,C,D),A=p2lp_test(B,C,D)),Ns),length(Ns,NL),NL=NTotal, !.
 p2lp_test(NTotal1,NTotal2,Score1,Score2) :-
 	NTotal3 is NTotal1+1,
 	p2lp_test(NTotal3,In,Out),
