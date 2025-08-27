@@ -20,6 +20,11 @@ use_module(library(dcg/basics)).
 
 :-dynamic keep_comments/1.
 
+% Handle discontiguous predicates
+:- discontiguous name101/3.
+:- discontiguous phrase_from_file_s/2.
+:- discontiguous writeln1/1.
+
 init_keep_comments :-
 	(not(keep_comments(_)
 	)->
@@ -482,15 +487,13 @@ lookahead1,%{notrace},
 	{L1=[L2]},!.
 
 varnames0(Ls2) --> %{trace},
-varname1(L1),newlines1(_),",", newlines1(_),%%{writeln(L)}, %%***
+varname1(L1),newlines1(_),",", newlines1(_),
 	varnames0(Ls), newlines1(_),
 	{append([L1],Ls,Ls2)},!. 
-%	{maplist(append,[[[L1,Ls]]],[[Ls2]])},!. 
 
-varnames0(Ls2) --> varname1(L1),newlines1(_),"|", newlines1(_),%%{writeln(L)}, %%***
+varnames0(Ls2) --> varname1(L1),newlines1(_),"|", newlines1(_),
 	varnames3(Ls), newlines1(_),
 	{Ls2 = [L1,"|",Ls]},!. 
-%	{maplist(append,[[[L1,"|",Ls]]],[Ls2])},!. 
 
 varnames3(L1) --> varname1(L2),%{trace},
 %lookahead1,%{notrace},
@@ -1046,15 +1049,9 @@ string_strings(String, CharStrings) :-
 	string_chars(String, Chars),
 	maplist(atom_string, Chars, CharStrings).
 
+% Delete a substring from the beginning and end of a string
 delete1_p2lp(A, Find, F) :-
-	%writeln1(delete1_p2lp(A, Find, F)),
-	%string_concat("%",A1,A2),
-	%string_concat(A2,"%",A),
-	%trace,
 	string_strings(A, B),
 	(append([Find], C, B) -> true; C = B),
 	(append(D, [Find], C) -> true; D = C),
-	(D = [] -> F = ""; foldr(string_concat, D, F)).		%split_string(A,Find,"",B),%findall([C,Replace],(member(C,B)),D),
-		%maplist(append,[[B]],[E]),concat_list(E,F).%,string_concat(F,G,F1),string_length(G,1).
-	%string_concat("%",F3,F2),	
-	%string_concat(F,"%",F3).
+	(D = [] -> F = ""; foldr(string_concat, D, F)).
