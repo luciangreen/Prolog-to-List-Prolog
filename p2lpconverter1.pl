@@ -488,8 +488,8 @@ varname1(L1),newlines1(_),",", newlines1(_),%%{writeln(L)}, %%***
 %	{maplist(append,[[[L1,Ls]]],[[Ls2]])},!. 
 
 varnames0(Ls2) --> varname1(L1),newlines1(_),"|", newlines1(_),%%{writeln(L)}, %%***
-	varnames0([Ls]), newlines1(_),
-	{append_list([L1,"|",Ls],Ls2)},!. 
+	varnames3(Ls), newlines1(_),
+	{Ls2 = [L1,"|",Ls]},!. 
 %	{maplist(append,[[[L1,"|",Ls]]],[Ls2])},!. 
 
 varnames3(L1) --> varname1(L2),%{trace},
@@ -1041,15 +1041,20 @@ v_if_string_or_atom(String_or_atom,V) :-
 	V=[v,String_or_atom];
 	V=String_or_atom),!.
 	
-delete1_p2lp(A	,Find,F) :-
-%writeln1(delete1_p2lp(A	,Find,F)),
-%string_concat("%",A1,A2),
-%string_concat(A2,"%",A),
-%trace,
-string_strings(A,B),
-(append([Find],C,B)->true;C=B),
-(append(D,[Find],C)->true;D=C),
-foldr(string_concat,D,F).		%split_string(A,Find,"",B),%findall([C,Replace],(member(C,B)),D),
+% Convert string to list of individual character strings
+string_strings(String, CharStrings) :-
+	string_chars(String, Chars),
+	maplist(atom_string, Chars, CharStrings).
+
+delete1_p2lp(A, Find, F) :-
+	%writeln1(delete1_p2lp(A, Find, F)),
+	%string_concat("%",A1,A2),
+	%string_concat(A2,"%",A),
+	%trace,
+	string_strings(A, B),
+	(append([Find], C, B) -> true; C = B),
+	(append(D, [Find], C) -> true; D = C),
+	(D = [] -> F = ""; foldr(string_concat, D, F)).		%split_string(A,Find,"",B),%findall([C,Replace],(member(C,B)),D),
 		%maplist(append,[[B]],[E]),concat_list(E,F).%,string_concat(F,G,F1),string_length(G,1).
 	%string_concat("%",F3,F2),	
 	%string_concat(F,"%",F3).
