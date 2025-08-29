@@ -3,10 +3,6 @@
 use_module(library(pio)).
 use_module(library(dcg/basics)).
 
-% Handle discontiguous predicates from other files
-:- discontiguous phrase_from_file_s/2.
-:- discontiguous writeln1/1.
-
 open_s(File,Mode,Stream) :-
 	atom_string(File1,File),
 	open(File1,Mode,Stream),!.
