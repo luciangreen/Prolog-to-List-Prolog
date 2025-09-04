@@ -137,7 +137,8 @@ pp2(List1,S1,S2,N) :-
 pp2(List1,S1,S2,N) :-
 	pp_separate_comma(PSC),
 	(%catch_true
-	(catch_true(List1=[List2|Lists3])->true; % this needs clearing up at start and middle of luciancicd
+	((catch_true(List1=[List2|Lists3]),
+	not(predicate_or_rule_name(List2)))->true; % this needs clearing up at start and middle of luciancicd
 	(%false
 	catch_true((List1=List2,
 	Lists3=[])))),
