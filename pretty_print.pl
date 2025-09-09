@@ -135,6 +135,7 @@ pp2(List1,S1,S2,N) :-
 	],S2))))),
 	!.
 pp2(List1,S1,S2,N) :-
+	not(List1=[":-"|_]),
 	pp_separate_comma(PSC),
 	(%catch_true
 	((catch_true(List1=[List2|Lists3]),
